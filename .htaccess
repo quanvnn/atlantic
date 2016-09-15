@@ -1,0 +1,49 @@
+RewriteEngine On
+
+RewriteRule ^(.*) - [E=BASE:%1]
+RewriteRule ^index.php ./front.php
+
+RewriteRule ^ho-tro-khach-hang ./front.php?kihieu=ho-tro-khach-hang
+RewriteRule ^khach-hang/gui-yeu-cau ./front.php?kihieu=gui-yeu-cau
+RewriteRule ^khach-hang/dang-ky ./front.php?kihieu=dang-ky
+RewriteRule ^khach-hang/gio-hang ./front.php?kihieu=gio-hang
+RewriteRule ^khach-hang/huy-gio-hang ./front.php?kihieu=huy-gio-hang
+RewriteRule ^khach-hang/dat-hang ./front.php?kihieu=dat-hang
+RewriteRule ^khach-hang/dang-xuat ./front.php?kihieu=dang-xuat
+RewriteRule ^khach-hang/thong-tin-don-hang/([0-9]+) ./front.php?kihieu=thong-tin-don-hang&key=$1
+RewriteRule ^khach-hang/quen-mat-khau ./front.php?kihieu=quen-mat-khau
+RewriteRule ^khach-hang/reset-password/([0-9a-zA-Z]+) ./front.php?kihieu=reset-password&key=$1
+
+RewriteRule ^quan-tri.html ./admin.php?kihieu=quan-tri
+RewriteRule ^quan-tri/dang-nhap.html ./admin.php?kihieu=quan-tri-dang-nhap
+RewriteRule ^quan-tri/dang-xuat.html ./admin.php?kihieu=quan-tri-dang-xuat
+RewriteRule ^quan-tri/san-pham.html ./admin.php?kihieu=quan-tri-san-pham
+RewriteRule ^quan-tri/them-sach.html ./admin.php?kihieu=quan-tri-them-san-pham
+RewriteRule ^quan-tri/xoa-sach-([0-9]+) ./admin.php?kihieu=quan-tri-xoa-san-pham&key=$1
+RewriteRule ^quan-tri/cap-nhat-sach-([0-9]+) ./admin.php?kihieu=quan-tri-cap-nhat-san-pham&key=$1
+RewriteRule ^quan-tri/loai-san-pham.html ./admin.php?kihieu=quan-tri-loai-san-pham
+RewriteRule ^quan-tri/them-the-loai-sach.html ./admin.php?kihieu=quan-tri-them-loai-san-pham
+RewriteRule ^quan-tri/xoa-the-loai-sach-([0-9]+) ./admin.php?kihieu=quan-tri-xoa-loai-san-pham&key=$1
+RewriteRule ^quan-tri/them-the-loai-con.html ./admin.php?kihieu=quan-tri-them-loai-con&key=$1
+RewriteRule ^quan-tri/cap-nhat-the-loai-sach-([0-9]+) ./admin.php?kihieu=quan-tri-cap-nhat-loai-cha&key=$1
+RewriteRule ^quan-tri/cap-nhat-the-loai-con-([0-9]+) ./admin.php?kihieu=quan-tri-cap-nhat-loai-con&key=$1
+RewriteRule ^quan-tri/chu-de.html ./admin.php?kihieu=quan-tri-chu-de
+RewriteRule ^quan-tri/them-chu-de-sach.html ./admin.php?kihieu=quan-tri-them-chu-de
+RewriteRule ^quan-tri/cap-nhat-chu-de-([a-z0-9-]+) ./admin.php?kihieu=quan-tri-cap-nhat-chu-de&key=$1
+RewriteRule ^quan-tri/don-hang.html ./admin.php?kihieu=quan-tri-don-hang
+RewriteRule ^quan-tri/don-hang/chi-tiet-don-hang-([0-9]+) ./admin.php?kihieu=quan-tri-chi-tiet-don-hang&key=$1
+RewriteRule ^quan-tri/yeu-cau-cua-khach-hang.html ./admin.php?kihieu=quan-tri-yeu-cau-cua-khach-hang
+RewriteRule ^quan-tri/binh-luan.html ./admin.php?kihieu=quan-tri-binh-luan
+RewriteRule ^quan-tri/binh-luan/xoa/([0-9]+) ./admin.php?kihieu=quan-tri-xoa-binh-luan&key=$1
+
+RewriteRule ^chu-de-([a-z0-9-_]+).html ./front.php?kihieu=san-pham-theo-chu-de&key=$1
+RewriteRule ^chu-de-([a-z0-9-_]+)/page([0-9]+) ./front.php?kihieu=san-pham-theo-chu-de&key=$1&page=$2
+RewriteRule ^([a-z-_]+).html ./front.php?kihieu=san-pham-loai-cha&key=$1
+RewriteRule ^([a-z0-9-_]+).html ./front.php?kihieu=chi-tiet-san-pham&key=$1
+RewriteRule ^([a-z-_]+)/page([0-9]+)/ ./front.php?kihieu=san-pham-loai-cha&key=$1&page=$2
+RewriteRule ^([a-z-_]+)/([a-z-_]+).html ./front.php?kihieu=san-pham-loai-con&key=$2
+RewriteRule ^([a-z-_]+)/([a-z-_]+)/page([0-9]+)/ ./front.php?kihieu=san-pham-loai-con&key=$2&page=$3
+
+
+Options +FollowSymlinks
+ErrorDocument 404 http://localhost/atlantic/
