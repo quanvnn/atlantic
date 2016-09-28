@@ -15,37 +15,31 @@ class HelperController
 							);
 	public function checkData($data)
 	{
-		$kq=true;
+		$kq = true;
 		$message = '<span style="color:#ff0000">*</span>';
 		// ta có thể thay đổi câu thông báo lỗi ra trình duyệt bằng cách thay đổi biến $message
 		// hàm chỉ mới validate cơ bản các trường ko được để trống, ta nên validate thêm nhiều thứ khác nữa ví dụ strip tags...
-		if($data['ten_san_pham']=='')
-		{
+		if ($data['ten_san_pham'] == '') {
 			$this->dataErr['ten_san_pham'] = $message;
-			$kq=false;
+			$kq = false;
 		}
-		if($data['ten_san_pham_url']=='')
-		{
+		if ($data['ten_san_pham_url'] == '') {
 			$this->dataErr['ten_san_pham_url'] = $message;
-			$kq=false;
+			$kq = false;
 		}
-		if($data['mo_ta']=='')
-		{
+		if ($data['mo_ta']=='') {
 			$this->dataErr['mo_ta'] = $message;
-			$kq=false;
+			$kq = false;
 		}
-		if($data['gia_bia']=='')
-		{
+		if ($data['gia_bia'] == '') {
 			$this->dataErr['gia_bia'] = $message;
-			$kq=false;
+			$kq = false;
 		}
-		if($data['gia_ban']=='')
-		{
+		if ($data['gia_ban'] == '') {
 			$this->dataErr['gia_ban'] = $message;
-			$kq=false;
+			$kq = false;
 		}
-		if($data['hinh']['error']!==0)
-		{
+		if ($data['hinh']['error'] !== 0) {
 			$this->dataErr['hinh'] = $message;
 			$kq=false;
 		}
@@ -62,64 +56,56 @@ class HelperController
         $type = end($arrType);
         //var_dump($type); exit();
         $imgUploadOk = 1;
-        if($type != 'jpg' && $type != 'jpeg' && $type != 'gif' && $type != 'png')
-        {
+        if ($type != 'jpg' && $type != 'jpeg' && $type != 'gif' && $type != 'png') {
             $imgUploadOk = 0;
         }
-        if($img['type']!='image/jpeg' && $img['type']!='image/jpg' && $img['type']!='image/png' && $img['type']!='image/gif')
-        {
+        if ($img['type'] != 'image/jpeg' && $img['type'] != 'image/jpg' && $img['type'] != 'image/png' && $img['type'] != 'image/gif') {
             $imgUploadOk = 0;
         }
-        if($img['size'] > 2000000)
-        {
+        if ($img['size'] > 2000000) {
             $imgUploadOk = 0;
         }
         return $imgUploadOk;
 	}
 	public function checkDataLoaiSanPham($data)
 	{
-		$kq=true;
+		$kq = true;
 		$message = '<span style="color:#ff0000">*</span>';
 		// ta có thể thay đổi câu thông báo lỗi ra trình duyệt bằng cách thay đổi biến $message
 		// hàm chỉ mới validate cơ bản các trường ko được để trống, ta nên validate thêm nhiều thứ khác nữa ví dụ strip tags...
-		if($data['ten_loai']=='')
-		{
+		if ($data['ten_loai'] == '') {
 			$this->dataErr['ten_loai'] = $message;
-			$kq=false;
+			$kq = false;
 		}
-		if($data['ten_loai_san_pham_url']=='')
-		{
+		if ($data['ten_loai_san_pham_url'] == '') {
 			$this->dataErr['ten_loai_san_pham_url'] = $message;
-			$kq=false;
+			$kq = false;
 		}
 		return $kq;
 	}
 	public function checkDataChuDe($data)
 	{
 		//var_dump($data);exit();
-		$kq=true;
+		$kq = true;
 		$message = '<span style="color:#ff0000">*</span>';
 		// ta có thể thay đổi câu thông báo lỗi ra trình duyệt bằng cách thay đổi biến $message
 		// hàm chỉ mới validate cơ bản các trường ko được để trống, ta nên validate thêm nhiều thứ khác nữa ví dụ strip tags...
-		if($data['ten_chu_de']=='')
-		{
+		if ($data['ten_chu_de'] == '') {
 			$this->dataErr['ten_chu_de'] = $message;
-			$kq=false;
+			$kq = false;
 		}
-		if($data['ten_chu_de_url']=='')
+		if ($data['ten_chu_de_url'] == '')
 		{
 			$this->dataErr['ten_chu_de_url'] = $message;
-			$kq=false;
+			$kq = false;
 		}
-		if($data['mo_ta']=='')
-		{
+		if($data['mo_ta'] == '') {
 			$this->dataErr['mo_ta'] = $message;
-			$kq=false;
+			$kq = false;
 		}
-		if($data['hinh']['error']!==0)
-		{
+		if ($data['hinh']['error'] !== 0) {
 			$this->dataErr['hinh'] = $message;
-			$kq=false;
+			$kq = false;
 		}
 		return $kq;
 	}
