@@ -1,6 +1,6 @@
-{extends file='layouts/layoutAdmin.tpl'}
+{extends file = 'layouts/layoutAdmin.tpl'}
 
-{block name='content'}
+{block name = 'content'}
 
 <div id="page-wrapper">
 	<div class="row">

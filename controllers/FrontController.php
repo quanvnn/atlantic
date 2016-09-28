@@ -14,8 +14,8 @@ class FrontController
 	{
         $ChuDeModel = new ChuDeModel();
         $DSChuDe = $ChuDeModel->DanhSachChuDe(); //var_dump($DSChuDe); exit();
-		$smarty = new SmartyController();
-        $smarty->assign('DSChuDe',$DSChuDe);
+		$smarty = new SmartyController;
+        $smarty->assign('DSChuDe', $DSChuDe);
 		$smarty->display('trang-chu.tpl');
 	}
 	public function SanPhamTheoLoaiCha()

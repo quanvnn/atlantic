@@ -1,11 +1,13 @@
 <?php
 session_start();
+
 chdir(dirname(__DIR__));
 define('path', 'http://atlantic.dev');
 require_once "smarty/libs/Smarty.class.php";
 require_once "models/LoaiSanPhamModel.php";
 //require_once('models/LoaiSanPhamModel.php');
-include_once('library/Gio_hang.php');
+include_once "library/Gio_hang.php";
+
 class SmartyController extends Smarty
 {
     public function __construct()
@@ -18,7 +20,7 @@ class SmartyController extends Smarty
         $this->assign('path', path);
 
         $LoaiSanPhamModel = new LoaiSanPhamModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->DSLoaiSanPham(); 
+        $DSLoaiSanPham = $LoaiSanPhamModel->getProduct(); 
         //var_dump($DSLoaiSanPham); exit();
         $this->assign('DSLoaiSanPham', $DSLoaiSanPham);
 

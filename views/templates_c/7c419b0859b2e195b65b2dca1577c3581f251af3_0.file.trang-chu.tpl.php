@@ -1,17 +1,17 @@
 <?php
-/* Smarty version 3.1.29, created on 2016-09-27 16:41:07
+/* Smarty version 3.1.29, created on 2016-09-28 09:48:40
   from "/home/lequan/IMAD/atlantic/views/templates/trang-chu.tpl" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.29',
-  'unifunc' => 'content_57ea3eb39a1b56_12085563',
+  'unifunc' => 'content_57eb2f8801a954_22626242',
   'file_dependency' => 
   array (
     '7c419b0859b2e195b65b2dca1577c3581f251af3' => 
     array (
       0 => '/home/lequan/IMAD/atlantic/views/templates/trang-chu.tpl',
-      1 => 1474966765,
+      1 => 1475030633,
       2 => 'file',
     ),
   ),
@@ -20,14 +20,14 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
     'file:layouts/layout.tpl' => 1,
   ),
 ),false)) {
-function content_57ea3eb39a1b56_12085563 ($_smarty_tpl) {
+function content_57eb2f8801a954_22626242 ($_smarty_tpl) {
 $_smarty_tpl->ext->_inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
 $_smarty_tpl->ext->_inheritance->processBlock($_smarty_tpl, 0, "content", array (
-  0 => 'block_134089729957ea3eb39607e8_83325025',
+  0 => 'block_82687228657eb2f87f3e243_52983133',
   1 => false,
   3 => 0,
   2 => 0,
@@ -36,7 +36,7 @@ $_smarty_tpl->ext->_inheritance->endChild($_smarty_tpl);
 $_smarty_tpl->smarty->ext->_subtemplate->render($_smarty_tpl, "file:layouts/layout.tpl", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 2, false);
 }
 /* {block 'content'}  file:trang-chu.tpl */
-function block_134089729957ea3eb39607e8_83325025($_smarty_tpl, $_blockParentStack) {
+function block_82687228657eb2f87f3e243_52983133($_smarty_tpl, $_blockParentStack) {
 ?>
 
 
