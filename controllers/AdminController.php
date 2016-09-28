@@ -174,7 +174,7 @@ class AdminController
         $smarty->assign('mangErr', $mangErr);
         //hiển thị list loại sản phẩm
         $LoaiSanPhamModel = new LoaiSanPhamModel();
-        $smarty->assign('DSLoaiSanPham', $LoaiSanPhamModel->getProduct());
+        $smarty->assign('DSLoaiSanPham', $LoaiSanPhamModel->getCat());
         $ChuDeModel = new ChuDeModel();
         $smarty->assign('DanhSachChuDe', $ChuDeModel->DanhSachChuDe());
         $smarty->assign('alert', $alert);
@@ -199,7 +199,7 @@ class AdminController
         }
         //hiển thị list danh sách loại ra trình duyệt để lựa chọn update
         $LoaiSanPhamModel = new LoaiSanPhamModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getProduct(); 
+        $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); 
         //var_dump($DSLoaiSanPham); exit();
         //hiển thị list danh sách chủ đề ra trình duyệt để lựa chọn update
         $ChuDeModel = new ChuDeModel();
@@ -280,7 +280,7 @@ class AdminController
     public function QuanTriLoaiSanPham()
     {
         $LoaiSanPhamModel = new LoaiSanPhamModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getProduct(); //var_dump($getProduct); exit();
+        $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); //var_dump($getCat); exit();
         $smarty = new SmartyController();
         if ($DSLoaiSanPham) {
             $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
@@ -367,7 +367,7 @@ class AdminController
         $smarty->assign('mangErr', $mangErr);
         $smarty->assign('alert', $alert);
         $LoaiSanPhamModel = new LoaiSanPhamModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getProduct();
+        $DSLoaiSanPham = $LoaiSanPhamModel->getCat();
         //var_dump($DSLoaiSanPham); exit();
         $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
         $smarty->display('admin/them-loai-san-pham.tpl');
@@ -383,10 +383,11 @@ class AdminController
         }
         //hiển thị list danh sách loại ra trình duyệt để lựa chọn update
         $LoaiSanPhamModel = new LoaiSanPhamModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getProduct(); //var_dump($getProduct); exit();
+        $DSLoaiSanPham = $LoaiSanPhamModel->getCat();
+        //var_dump($DSLoaiSanPham); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
         $data = $LoaiSanPhamModel->DSLoaiSanPhamId($key); //var_dump($data); exit();
-        if (!$data) {
+        if (! $data) {
             //có thể người dùng nhập biến GET bất kỳ
             //nếu GET mã sản phẩm không tồn tại trong csdl nên ko thể có sản phẩm để xuất ra
             header('location:'.path.'/quan-tri/loai-san-pham.html');
@@ -437,7 +438,7 @@ class AdminController
         }
         //hiển thị list danh sách loại ra trình duyệt để lựa chọn update
         $LoaiSanPhamModel = new LoaiSanPhamModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getProduct(); //var_dump($getProduct); exit();
+        $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); //var_dump($getCat); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
         $data = $LoaiSanPhamModel->DSLoaiSanPhamId($key); //var_dump($data); exit();
         if (!$data) {

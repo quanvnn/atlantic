@@ -20,7 +20,7 @@ class SmartyController extends Smarty
         $this->assign('path', path);
 
         $LoaiSanPhamModel = new LoaiSanPhamModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getProduct(); 
+        $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); 
         //var_dump($DSLoaiSanPham); exit();
         $this->assign('DSLoaiSanPham', $DSLoaiSanPham);
 

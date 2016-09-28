@@ -3,7 +3,7 @@
 include_once('models/Database.php');
 class LoaiSanPhamModel extends Database
 {
-    public function getProduct()
+    public function getCat()
     {
         $this->setQuery('SELECT * FROM loai_san_pham WHERE ma_loai_cha=0');
         $DSLoaiCha = $this->loadAllRow();
