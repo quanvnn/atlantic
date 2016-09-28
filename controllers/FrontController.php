@@ -28,11 +28,12 @@ class FrontController
             
             $chuoi = $_GET['key']; //echo $chuoi; exit();
             $LoaiSanPhamModel = new LoaiSanPhamModel();
-            $LoaiCha = $LoaiSanPhamModel->LoaiSanPhamTheoUrl($chuoi); //var_dump($LoaiCha); exit();
+            $LoaiCha = $LoaiSanPhamModel->getCatUrl($chuoi); //var_dump($LoaiCha); exit();
 
             if ($LoaiCha) {
                 $smarty = new SmartyController();
-                $DSLoaiCon = $LoaiSanPhamModel->DSLoaiSanPhamCon($LoaiCha['ma_loai']);
+                $DSLoaiCon = $LoaiSanPhamModel->getSubCat($LoaiCha['ma_loai']);
+                //var_dump($DSLoaiCon); exit();
 
                 if ($DSLoaiCon) {
                     // Tạo một mảng chứa các mã loại con
@@ -72,10 +73,10 @@ class FrontController
         {
             $chuoi = $_GET['key'];
             $LoaiSanPhamModel = new LoaiSanPhamModel();
-            $LoaiCon = $LoaiSanPhamModel->LoaiSanPhamTheoUrl($chuoi);
+            $LoaiCon = $LoaiSanPhamModel->getCatUrl($chuoi);
             //var_dump($LoaiCon); exit();
             if ($LoaiCon) {
-                $LoaiCha = $LoaiSanPhamModel->LoaiSanPhamMaLoai($LoaiCon['ma_loai_cha']);//dùng cho breadcrumb
+                $LoaiCha = $LoaiSanPhamModel->getCatID($LoaiCon['ma_loai_cha']);//dùng cho breadcrumb
                 
                 $SanPhamModel = new SanPhamModel();
                 // phân trang

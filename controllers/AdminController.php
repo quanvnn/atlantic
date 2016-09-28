@@ -386,7 +386,7 @@ class AdminController
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat();
         //var_dump($DSLoaiSanPham); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
-        $data = $LoaiSanPhamModel->DSLoaiSanPhamId($key); //var_dump($data); exit();
+        $data = $LoaiSanPhamModel->getCatID($key); //var_dump($data); exit();
         if (! $data) {
             //có thể người dùng nhập biến GET bất kỳ
             //nếu GET mã sản phẩm không tồn tại trong csdl nên ko thể có sản phẩm để xuất ra
@@ -440,7 +440,7 @@ class AdminController
         $LoaiSanPhamModel = new LoaiSanPhamModel();
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); //var_dump($getCat); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
-        $data = $LoaiSanPhamModel->DSLoaiSanPhamId($key); //var_dump($data); exit();
+        $data = $LoaiSanPhamModel->getCatID($key); //var_dump($data); exit();
         if (!$data) {
             //có thể người dùng nhập biến GET bất kỳ
             //nếu GET mã sản phẩm không tồn tại trong csdl nên ko thể có sản phẩm để xuất ra
