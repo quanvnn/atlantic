@@ -6,21 +6,18 @@ class Database
     protected $stateMent='';
     public function Database()
     {
-        try
-        {
+        try {
             $this->pdo=new PDO('mysql:host=localhost; dbname=atlantic','root','lequan');
             $this->pdo->query('set names utf8');
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-        }
-        catch(PDOException $e)
-        {
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(PDOException $e) {
             print "Error!: " . $e->getMessage() . "<br/>";
             die();
         }
     }
     public function setQuery($sql)
     {
-        $this->sql=$sql;
+        $this->sql = $sql;
     }
     //Thực hiện truy vấn hành động: insert, update, delete
     public function execute($option=array())
