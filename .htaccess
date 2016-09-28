@@ -46,4 +46,3 @@ RewriteRule ^([a-z-_]+)/([a-z-_]+)/page([0-9]+)/ ./front.php?kihieu=san-pham-loa
 
 
 Options +FollowSymlinks
-ErrorDocument 404 http://localhost/atlantic/

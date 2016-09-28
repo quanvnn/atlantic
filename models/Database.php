@@ -8,7 +8,7 @@ class Database
     {
         try
         {
-            $this->pdo=new PDO('mysql:host=localhost; dbname=atlantic','root','');
+            $this->pdo=new PDO('mysql:host=localhost; dbname=atlantic','root','lequan');
             $this->pdo->query('set names utf8');
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
         }
