@@ -1,5 +1,6 @@
 <?php
-include_once('models/Database.php');
+
+include_once "models/Database.php";
 class SanPhamModel extends Database
 {
     public function SanPhamId($id)
@@ -12,17 +13,17 @@ class SanPhamModel extends Database
         $this->setQuery("SELECT count(ma_san_pham) FROM san_pham WHERE ma_loai in({$DSmaloai})");
         return $this->loadNum();
     }
-    public function SanPhamTheoLoaiConPhanTrang($DSmaloai,$start,$limit)
+    public function SanPhamTheoLoaiConPhanTrang($DSmaloai, $start, $limit)
     {
         $this->setQuery("SELECT * FROM san_pham WHERE ma_loai in({$DSmaloai}) LIMIT {$start},{$limit}");
         return $this->loadAllRow();
     }
-    public function DSSanPhamCungLoai($id,$maloai)
+    public function DSSanPhamCungLoai($id, $maloai)
     {
         $this->setQuery('SELECT * FROM san_pham WHERE ma_san_pham !=? and ma_loai=?');
         return $this->loadAllRow(array($id,$maloai));
     }
-    public function SanPhamTheoLoaiPhanTrang($maloai,$start,$limit)
+    public function SanPhamTheoLoaiPhanTrang($maloai, $start, $limit)
     {
         $this->setQuery("SELECT * FROM san_pham WHERE ma_loai=? LIMIT {$start},{$limit}");
         return $this->loadAllRow(array($maloai));

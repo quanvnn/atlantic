@@ -1,15 +1,15 @@
 <?php
+
 include_once('models/Database.php');
 class LoaiSanPhamModel extends Database
 {
     public function DSLoaiSanPham()
     {
         $this->setQuery('SELECT * FROM loai_san_pham WHERE ma_loai_cha=0');
-        $DSLoaiCha=$this->loadAllRow();
+        $DSLoaiCha = $this->loadAllRow();
         //Tạo mảng chứa loại sản phẩm
         $mangLoaiSanPham=array();
-        foreach($DSLoaiCha as $loaicha)
-        {
+        foreach($DSLoaiCha as $loaicha) {
             $mangLoaiSanPham[]=array($loaicha,$this->DSLoaiSanPhamCon($loaicha['ma_loai']));
         }
         return $mangLoaiSanPham;

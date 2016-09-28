@@ -12,7 +12,7 @@ class DonHangModel extends Database
     }
     public function ChiTietDonHang($SoHD)
     {
-        $chuoiSQL="SELECT 
+        $chuoiSQL = "SELECT 
         	`khach_hang`.`ten_khach_hang`, `khach_hang`.`email`, 
         	`hoa_don`.`ten_nguoi_nhan`, `hoa_don`.`dien_thoai`, `hoa_don`.`dia_chi`, `hoa_don`.`ngay_hd`, `hoa_don`.`tri_gia`,
         	`ct_hoa_don`.`so_luong`, `ct_hoa_don`.`don_gia`, `ct_hoa_don`.`ma_san_pham`,
