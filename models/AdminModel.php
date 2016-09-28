@@ -2,18 +2,18 @@
 include_once('models/Database.php');
 class AdminModel extends Database
 {
-    public function getNguoiDungDangNhap($tendangnhap, $matkhau)
+    public function getInfoAdmin($name, $pass)
     {
         $this->setQuery('SELECT * FROM nguoi_dung WHERE ten_dang_nhap=? AND mat_khau=?');
-        return $this->loadRow(array($tendangnhap, $matkhau));
+        return $this->loadRow(array($name, $pass));
     }
     // Bang san pham
-    public function DSSanPhamAdmin()
+    public function getProductAdmin()
     {
         $this->setQuery("SELECT * FROM san_pham ORDER BY ma_san_pham DESC");
         return $this->loadAllRow();
     }
-    public function XoaSanPham($id)
+    public function deleteProductAdmin($id)
     {
         $this->setQuery('DELETE FROM san_pham WHERE ma_san_pham=?');
         return $this->execute(array($id));

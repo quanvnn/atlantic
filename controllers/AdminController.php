@@ -24,7 +24,7 @@ class AdminController
             parse_str($_COOKIE[$cookie_name]);
             //kiểm tra user và pass với CSDL
             $admin = new AdminModel();
-            $nguoi_dung = $admin->getNguoiDungDangNhap($tendn, $mat_khau);
+            $nguoi_dung = $admin->getInfoAdmin($tendn, $mat_khau);
             if ($nguoi_dung) {
                 //Tạo session.nguoi_dung
                 $arrTTNguoiDung=array(
@@ -43,7 +43,7 @@ class AdminController
 
             //kiểm tra user và pass với CSDL
             $admin = new AdminModel();
-            $nguoi_dung = $admin->getNguoiDungDangNhap($ten_dang_nhap, md5($mat_khau));
+            $nguoi_dung = $admin->getInfoAdmin($ten_dang_nhap, md5($mat_khau));
 
             if ($nguoi_dung) {
                 //Tạo session.nguoi_dung
@@ -88,7 +88,7 @@ class AdminController
     public function QuanTriSanPham()
     {
         $admin = new AdminModel();
-        $DSSanPham = $admin->DSSanPhamAdmin();
+        $DSSanPham = $admin->getProductAdmin();
         $smarty = new SmartyController();
         if ($DSSanPham) {
             $smarty->assign('DSSanPham', $DSSanPham);
@@ -106,7 +106,7 @@ class AdminController
             if(file_exists('./public/hinh_san_pham/'.$data['hinh'])) {
                 unlink('./public/hinh_san_pham/'.$data['hinh']);
                 $admin = new AdminModel();
-                $admin->XoaSanPham($msp);
+                $admin->deleteProductAdmin($msp);
             }
             header('location:'.path.'/quan-tri/san-pham.html');
         }
