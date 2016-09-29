@@ -23,7 +23,6 @@ if (isset($_GET['kihieu'])) {
             $FrontController->getInfoInvoice(); break;
         case 'quen-mat-khau':
             $FrontController->forgotPassWord(); break;
-        
         case 'san-pham-loai-cha':
             $FrontController->getProductsInCat(); break;
         case 'san-pham-loai-con':

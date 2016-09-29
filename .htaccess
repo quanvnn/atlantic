@@ -24,7 +24,6 @@ RewriteRule ^quan-tri/cap-nhat-sach-([0-9]+) ./admin.php?kihieu=quan-tri-cap-nha
 RewriteRule ^quan-tri/loai-san-pham.html ./admin.php?kihieu=quan-tri-loai-san-pham
 RewriteRule ^quan-tri/them-the-loai-sach.html ./admin.php?kihieu=quan-tri-them-loai-san-pham
 RewriteRule ^quan-tri/xoa-the-loai-sach-([0-9]+) ./admin.php?kihieu=quan-tri-xoa-loai-san-pham&key=$1
-RewriteRule ^quan-tri/them-the-loai-con.html ./admin.php?kihieu=quan-tri-them-loai-con&key=$1
 RewriteRule ^quan-tri/cap-nhat-the-loai-sach-([0-9]+) ./admin.php?kihieu=quan-tri-cap-nhat-loai-cha&key=$1
 RewriteRule ^quan-tri/cap-nhat-the-loai-con-([0-9]+) ./admin.php?kihieu=quan-tri-cap-nhat-loai-con&key=$1
 RewriteRule ^quan-tri/chu-de.html ./admin.php?kihieu=quan-tri-chu-de

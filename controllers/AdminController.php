@@ -11,7 +11,7 @@ include_once('models/AdminModel.php');
 
 class AdminController
 {
-    public function QuanTriDangNhap()
+    public function loginAdmin()
     {
         $smarty = new SmartyController();
 
@@ -64,7 +64,7 @@ class AdminController
         }
         $smarty->display('admin/login.tpl');
     }
-    public function QuanTri()
+    public function manageSystem()
     {
         // kiểm tra tồn tại của session.nguoi_dung
         if (! isset($_SESSION['nguoi_dung'])) {
@@ -77,7 +77,7 @@ class AdminController
             $smarty->display('admin/admin.tpl');
         }
     }
-    public function QuanTriDangXuat() {
+    public function logoutAdmin() {
         session_destroy();
         unset($_SESSION['nguoi_dung']);
         if (isset($_COOKIE['nguoi_dung'])) {
@@ -85,7 +85,7 @@ class AdminController
         }
         header('location:'.path.'/quan-tri/dang-nhap.html'); exit();
     }
-    public function QuanTriSanPham()
+    public function manageProducts()
     {
         $admin = new AdminModel();
         $DSSanPham = $admin->getProductAdmin();
@@ -97,7 +97,7 @@ class AdminController
             header('location:'.path.'/quan-tri/san-pham.html'); exit();
         }
     }
-    public function QuanTriXoaSanPham()
+    public function deleteProduct()
     {
         if (isset($_GET['key'])) {
             $msp = $_GET['key'];
@@ -111,7 +111,7 @@ class AdminController
             header('location:'.path.'/quan-tri/san-pham.html');
         }
     }
-    public function QuanTriThemSanPham()
+    public function addProduct()
     {
         $alert ='';
         $data = array(
@@ -190,7 +190,7 @@ class AdminController
         $smarty->assign('alert', $alert);
         $smarty->display('admin/add_product.tpl');
     }
-    public function QuanTriCapNhatSanPham()
+    public function updateProduct()
     {
         //validate biến GET
         //nhận GET mã sản phẩm để truy xuất csdl sản phẩm hiển thị ra trình duyệt
@@ -287,10 +287,10 @@ class AdminController
         $smarty->assign('alert', $alert);
         $smarty->display('admin/update_product.tpl');
     }
-    public function QuanTriLoaiSanPham()
+    public function manageCategories()
     {
-        $LoaiSanPhamModel = new CategoryModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); //var_dump($getCat); exit();
+        $CategoryModel = new CategoryModel();
+        $DSLoaiSanPham = $CategoryModel->getCat(); //var_dump($getCat); exit();
         $smarty = new SmartyController();
         if ($DSLoaiSanPham) {
             $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
@@ -300,7 +300,7 @@ class AdminController
         }         
         
     }
-    public function QuanTriXoaLoaiSanPham()
+    public function deleteCategory()
     {
         //echo 'ok';
         if (isset($_GET['key'])) {
@@ -311,7 +311,7 @@ class AdminController
             header('location:'.path.'/quan-tri/loai-san-pham.html');
         }
     }
-    public function QuanTriThemLoaiSanPham()
+    public function addCategory()
     {
         $alert = array();
         $data['loaicha'] = array(
@@ -332,10 +332,10 @@ class AdminController
         //Thêm loại cha
         if (isset($_POST['btnThemLoaiCha'])) {
             $data['loaicha'] = array(
-                'ten_loai'                 =>$_POST['ten_loai'],
+              //  'ten_loai'                 =>$_POST['ten_loai'],
                 'ten_loai_san_pham_url'    =>$_POST['ten_loai_san_pham_url'],
                 );
-            //var_dump($data); exit();
+            var_dump($data); exit();
             $check = new HelperController();
             if ($check->checkDataLoaiSanPham($data['loaicha'])) {
                 //Hàm trả về true false
@@ -382,7 +382,7 @@ class AdminController
         $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
         $smarty->display('admin/add_category.tpl');
     }
-    public function QuanTriCapNhatLoaiSanPham()
+    public function updateCategory()
     {
         if (isset($_GET['key']) && filter_var($_GET['key'], FILTER_VALIDATE_INT, array("options" => array("min_range"=>1)))) {
             //mã sản phẩm
@@ -437,7 +437,7 @@ class AdminController
         $smarty->assign('alert', $alert);
         $smarty->display('admin/update_category.tpl');
     }
-    public function QuanTriCapNhatLoaiCon()
+    public function updateSubCategory()
     {
         if (isset($_GET['key']) && filter_var($_GET['key'], FILTER_VALIDATE_INT, array("options" => array("min_range"=>1)))) {
             //mã sản phẩm
@@ -492,10 +492,10 @@ class AdminController
         $smarty->assign('alert', $alert);
         $smarty->display('admin/update_subcategory.tpl');
     }
-    public function QuanTriChuDe()
+    public function manageSubject()
     {
-        $ChuDeModel = new SubjectModel();
-        $DSChuDe = $ChuDeModel->getSubject();
+        $SubjectModel = new SubjectModel();
+        $DSChuDe = $SubjectModel->getSubject();
         //var_dump($DSChuDe); exit();
         
         if ($DSChuDe) {
@@ -507,7 +507,7 @@ class AdminController
             exit();
         }
     }
-    public function QuanTriThemChuDe()
+    public function addSubject()
     {
         header('location:'.path.'/quan-tri/subject.html');
         // $alert ='';
@@ -571,7 +571,7 @@ class AdminController
         // $smarty->assign('alert',$alert);
         // $smarty->display('admin/add_subject.tpl');
     }
-    public function QuanTriCapNhatChuDe()
+    public function updateSubject()
     {
         //Validate biến GET: nếu biến GET tồn tại và kiểu nguyên lớn hơn 0
         if (isset($_GET['key'])) {
@@ -584,8 +584,8 @@ class AdminController
             exit();
         }
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
-        $ChuDeModel = new SubjectModel();
-        $data = $ChuDeModel->getSubjectID($ma_chu_de); //var_dump($data); exit();
+        $SubjectModel = new SubjectModel();
+        $data = $SubjectModel->getSubjectID($ma_chu_de); //var_dump($data); exit();
         $hinh_cu = $data['hinh'];
         //var_dump($data['hinh']); exit();
         if (! $data) {
@@ -647,10 +647,10 @@ class AdminController
         $smarty->assign('alert', $alert);
         $smarty->display('admin/update_subject.tpl');
     }
-    public function QuanTriDonHang()
+    public function manageInvoices()
     {
-    	$DonHangModel = new InvoiceModel();
-    	$DSHoaDon = $DonHangModel->getInvoices();
+    	$InvoiceModel = new InvoiceModel();
+    	$DSHoaDon = $InvoiceModel->getInvoices();
     	//var_dump($DSHoaDon); exit();
     	$smarty = new SmartyController();
     	if ($DSHoaDon) {
@@ -658,14 +658,14 @@ class AdminController
     	}
     	$smarty->display('admin/invoices.tpl');
     }
-    public function QuanTriChiTietDonHang()
+    public function manageInvoiceDetails()
     {
     	$smarty = new SmartyController();
     	if (isset($_GET['key'])) {
             //chua validate bien GET
     		$soHD = $_GET['key'];
-    		$DonHangModel = new InvoiceModel();
-    		$ChiTietDonHang = $DonHangModel->getInfoInvoice($soHD);
+    		$InvoiceModel = new InvoiceModel();
+    		$ChiTietDonHang = $InvoiceModel->getInfoInvoice($soHD);
     		//var_dump($ChiTietDonHang); exit();
     		if ($ChiTietDonHang) {
     			$smarty->assign('ChiTietDonHang',$ChiTietDonHang);
@@ -677,10 +677,10 @@ class AdminController
     	}
     	$smarty->display('admin/invoice_details.tpl');
     }
-    public function QuanTriYeuCauKhachHang()
+    public function manageRequireClient()
     {
-        $LienHeModel = new ContactModel();
-        $DSYeuCauKhachHang = $LienHeModel->getRequireClient();
+        $ContactModel = new ContactModel();
+        $DSYeuCauKhachHang = $ContactModel->getRequireClient();
         //var_dump($DSYeuCauKhachHang); exit();
         $smarty = new SmartyController();
         if ($DSYeuCauKhachHang) {
@@ -688,10 +688,10 @@ class AdminController
         }
         $smarty->display('admin/contact.tpl');
     }
-    public function QuanTriBinhLuan()
+    public function manageComment()
     {
-        $BinhLuanModel = new CommentModel();
-        $DSBinhLuanAdmin = $BinhLuanModel->getCommentAdmin();
+        $CommentModel = new CommentModel();
+        $DSBinhLuanAdmin = $CommentModel->getCommentAdmin();
         //var_dump($DSBinhLuanAdmin); exit();
         $smarty = new SmartyController();
         if ($DSBinhLuanAdmin)
@@ -700,14 +700,14 @@ class AdminController
         }
         $smarty->display('admin/comment.tpl');
     }
-    public function QuanTriXoaBinhLuan()
+    public function deleteComment()
     {
         if (isset($_GET['key'])) {
             $id = $_GET['key'];
             //var_dump($id); exit();
             $smarty = new SmartyController();
-            $BinhLuanModel = new CommentModel();
-            $BinhLuanModel->deleteComment($id);
+            $CommentModel = new CommentModel();
+            $CommentModel->deleteComment($id);
             header('location:'.path.'/quan-tri/binh-luan.html');
             exit();
         } else {
