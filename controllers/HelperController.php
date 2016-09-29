@@ -41,7 +41,7 @@ class HelperController
 		}
 		if ($data['hinh']['error'] !== 0) {
 			$this->dataErr['hinh'] = $message;
-			$kq=false;
+			$kq = false;
 		}
 		return $kq;
 	}

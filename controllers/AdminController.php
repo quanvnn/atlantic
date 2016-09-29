@@ -106,7 +106,7 @@ class AdminController
             if(file_exists('./public/hinh_san_pham/'.$data['hinh'])) {
                 unlink('./public/hinh_san_pham/'.$data['hinh']);
                 $admin = new AdminModel();
-                $admin->deleteProductAdmin($msp);
+                $admin->deleteProduct($msp);
             }
             header('location:'.path.'/quan-tri/san-pham.html');
         }
@@ -145,22 +145,32 @@ class AdminController
                 );
             //var_dump($data); exit();
             $check = new HelperController();
+            //var_dump($check->checkData($data)); exit();
             if ($check->checkData($data)) {
                 //Hàm trả về true false 
                 // Đảm bảo các trường bắt buộc ko để trống thì tiến hành Upload file
+                //var_dump($check->checkimage($data['hinh'])); exit();
                 if ($check->checkimage($data['hinh'])) {
                     // thực hiện upload hình vào csdl
                     $hinh = $_FILES['hinh'];
-                    $nameHinh = time().'-'.$hinh['name'];
-                    $data['hinh'] = $nameHinh;
+                    //var_dump($hinh);
+                    $data['hinh'] = time().'-'.$hinh['name'];
+                    //var_dump($data['hinh']); exit();
+                    //var_dump(move_uploaded_file($hinh['tmp_name'],'./public/hinh_san_pham/'.$data['hinh'])); exit();
+
                     if (move_uploaded_file($hinh['tmp_name'],'./public/hinh_san_pham/'.$data['hinh'])) {
                         // insert sản phẩm vào csdl
                         $admin = new AdminModel();
-                        $admin->ThemSanPham($data);
+                        $admin->addProduct($data);
                         $alert = 'Thêm sản phẩm thành công!';
+                        //var_dump($alert); exit();
                     }
-                } else
+
+                } else {
                     $alert = 'Vui lòng kiểm tra lại hình và đảm bảo rằng hình sản phẩm nhỏ hơn 2 Mb.';
+                    echo 'sai'; exit();
+                }
+                    
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
                 $mangErr = $check->getDataErr();
@@ -243,14 +253,14 @@ class AdminController
             if ($check->checkData($data)) {
                 //nếu không có lỗi xảy ra đối với các trường bắt buộc
                 //tiến hành kiểm tra trường upload hình
-                $hinh = $_FILES['hinh']; //var_dump($hinh); exit();
+                $hinh = $_FILES['hinh']; 
+                //var_dump($hinh); exit();
                 if ($check->checkimage($hinh) == 0) {
                     $alert = 'Vui lòng kiểm tra lại hình và đảm bảo rằng hình sản phẩm nhỏ hơn 2 Mb.';
                 } else {
                     // thực hiện upload hình vào csdl
                     $nameHinh = time().'-'.$hinh['name'];
-                    if (move_uploaded_file($hinh['tmp_name'],'./public/hinh_san_pham/'.$nameHinh))
-                    {
+                    if (move_uploaded_file($hinh['tmp_name'],'./public/hinh_san_pham/'.$nameHinh)){
                         //nếu upload thành công ta sẽ xóa hình cũ đi
                         if (file_exists('./public/hinh_san_pham/'.$hinh_cu)) {
                             unlink('./public/hinh_san_pham/'.$hinh_cu);
@@ -258,7 +268,7 @@ class AdminController
                         //thực hiện sản phẩm update vào csdl
                         $data['hinh'] = $nameHinh;
                         $admin = new AdminModel();
-                        $admin->CapNhatSanPham($data);
+                        $admin->updateProduct($data);
                         //Thông báo ra trình duyệt
                         $alert = 'Cập nhật sản phẩm thành công!';
                     }
@@ -297,7 +307,7 @@ class AdminController
             //var_dump($_GET['key']); exit();
             $maloai = $_GET['key'];
             $admin = new AdminModel();
-            $admin->XoaLoaiSanPham($maloai);
+            $admin->deleteCat($maloai);
             header('location:'.path.'/quan-tri/loai-san-pham.html');
         }
     }
@@ -331,7 +341,7 @@ class AdminController
                 //Hàm trả về true false
                 // insert sản phẩm vào csdl
                 $admin = new AdminModel();
-                $admin->ThemLoaiSanPham($data['loaicha']);
+                $admin->addCat($data['loaicha']);
                 $alert['loaicha'] = 'Thêm thành công!';
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
@@ -351,7 +361,7 @@ class AdminController
             if ($check->checkDataLoaiSanPham($data['loaicon'])) {
                 // insert sản phẩm vào csdl
                 $admin = new AdminModel();
-                $admin->ThemLoaiCon($data['loaicon']);
+                $admin->addSubCat($data['loaicon']);
                 $alert['loaicon'] = 'Thêm thành công!';
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
@@ -411,7 +421,7 @@ class AdminController
             if ($check->checkDataLoaiSanPham($data)) {
                 //thực hiện sản phẩm update vào csdl
                 $admin = new AdminModel();
-                $admin->CapNhatLoaiCha($data);
+                $admin->updateCat($data);
                 //Thông báo ra trình duyệt
                 $alert = 'Cập nhật thành công!';
             } else {
@@ -441,7 +451,7 @@ class AdminController
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); //var_dump($getCat); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
         $data = $LoaiSanPhamModel->getCatID($key); //var_dump($data); exit();
-        if (!$data) {
+        if (! $data) {
             //có thể người dùng nhập biến GET bất kỳ
             //nếu GET mã sản phẩm không tồn tại trong csdl nên ko thể có sản phẩm để xuất ra
             header('location:'.path.'/quan-tri/loai-san-pham.html');
@@ -466,7 +476,7 @@ class AdminController
             if ($check->checkDataLoaiSanPham($data)) {
                 //thực hiện sản phẩm update vào csdl
                 $admin = new AdminModel();
-                $admin->CapNhatLoaiCon($data);
+                $admin->updateSubCat($data);
                 //Thông báo ra trình duyệt
                 $alert = 'Cập nhật thành công!';
             } else {
@@ -611,6 +621,7 @@ class AdminController
                 } else {
                     // thực hiện upload hình vào csdl
                     $nameHinh = time().'-'.$hinh['name'];
+                
                     if (move_uploaded_file($hinh['tmp_name'],'./public/images/'.$nameHinh)) {
                         //nếu upload thành công ta sẽ xóa hình cũ đi
                         if (file_exists('./public/images/'.$hinh_cu)) {
@@ -619,7 +630,7 @@ class AdminController
                         //thực hiện sản phẩm update vào csdl
                         $data['hinh'] = $nameHinh;
                         $admin = new AdminModel();
-                        $admin->CapNhatChuDe($data);
+                        $admin->updateSubject($data);
                         //Thông báo ra trình duyệt
                         $alert = 'Cập nhật thành công!';
                     }
