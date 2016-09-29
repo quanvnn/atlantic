@@ -8,39 +8,39 @@ class ProductModel extends Database
         $this->setQuery('SELECT * FROM san_pham WHERE ma_san_pham=?');
         return $this->loadRow(array($id));
     }
-    public function countProductsInSubCat($DSmaloai)
+    public function countProductsInSubCat($stringIdCategory)
     {
-        $this->setQuery("SELECT count(ma_san_pham) FROM san_pham WHERE ma_loai in({$DSmaloai})");
+        $this->setQuery("SELECT count(ma_san_pham) FROM san_pham WHERE ma_loai in({$stringIdCategory})");
         return $this->loadNum();
     }
-    public function getProductsInSubCat($DSmaloai, $start, $limit)
+    public function getProductsInSubCat($stringIdCategory, $start, $limit)
     {
-        $this->setQuery("SELECT * FROM san_pham WHERE ma_loai in({$DSmaloai}) LIMIT {$start},{$limit}");
+        $this->setQuery("SELECT * FROM san_pham WHERE ma_loai in({$stringIdCategory}) LIMIT {$start},{$limit}");
         return $this->loadAllRow();
     }
-    public function getProductsFromTheSameCat($id, $maloai)
+    public function getProductsFromTheSameCat($idProduct, $idCategory)
     {
         $this->setQuery('SELECT * FROM san_pham WHERE ma_san_pham !=? and ma_loai=?');
-        return $this->loadAllRow(array($id,$maloai));
+        return $this->loadAllRow(array($idProduct, $idCategory));
     }
-    public function getProductInCat($maloai, $start, $limit)
+    public function getProductInCat($idCategory, $start, $limit)
     {
         $this->setQuery("SELECT * FROM san_pham WHERE ma_loai=? LIMIT {$start},{$limit}");
-        return $this->loadAllRow(array($maloai));
+        return $this->loadAllRow(array($idCategory));
     }
-    public function countProductsInCat($maloai)
+    public function countProductsInCat($idCategory)
     {
-        $this->setQuery("SELECT count(ma_san_pham) FROM san_pham WHERE ma_loai={$maloai}");
+        $this->setQuery("SELECT count(ma_san_pham) FROM san_pham WHERE ma_loai={$idCategory}");
         return $this->loadNum();
     }
-    public function getProductInSubject($ma_chu_de)
+    public function getProductInSubject($idSubject)
     {
         $this->setQuery("SELECT * FROM san_pham WHERE chu_de_id =? ");
-        return $this->loadAllRow(array($ma_chu_de));
+        return $this->loadAllRow(array($idSubject));
     }
-    public function countProductsInSubject($ma_chu_de)
+    public function countProductsInSubject($idSubject)
     {
-        $this->setQuery("SELECT count(ma_san_pham) FROM san_pham WHERE chu_de_id = {$ma_chu_de}");
+        $this->setQuery("SELECT count(ma_san_pham) FROM san_pham WHERE chu_de_id = {$idSubject}");
         return $this->loadNum();
     }
 }

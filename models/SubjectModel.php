@@ -7,10 +7,10 @@ class SubjectModel extends Database
         $this->setQuery('SELECT * FROM chu_de');
         return $this->loadAllRow();
     }
-    public function getSubjectID($id)
+    public function getSubjectID($idSubject)
     {
     	$this->setQuery('SELECT * FROM chu_de WHERE ma_chu_de =?');
-    	return $this->loadRow(array($id));
+    	return $this->loadRow(array($idSubject));
     }
     
 } // ./AdminModel
