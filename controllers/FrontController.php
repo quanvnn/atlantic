@@ -121,42 +121,39 @@ class FrontController
         }
     }
 
-    //////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////
-    // 29/9
     public function getProductInSubject()
     {
         if (isset($_GET['key'])) {
-            $chuoi = $_GET['key']; //echo $chuoi; exit();
-            $mang = explode('-', $chuoi);
-            $ma_chu_de = $mang[count($mang)-1]; //echo $ma_chu_de; exit();
-            $ChuDeModel = new SubjectModel();
-            $ChuDe = $ChuDeModel->getSubjectID($ma_chu_de);
-            //var_dump($ChuDe); exit();
-            if ($ChuDe) {
-                $SanPhamModel = new ProductModel();
+            $stringUrl = $_GET['key']; 
+            //echo $stringUrl; exit();
+            $array = explode('-', $stringUrl);
+            $idSubject = $array[count($array)-1]; 
+            //echo $idSubject; exit();
+            $subjectModel = new SubjectModel();
+            $subjects = $subjectModel->getSubjectID($idSubject);
+            //var_dump($subjects); exit();
+            if ($subjects) {
+                $productModel = new ProductModel();
                 
                 $pager = new Pager();
                 $limit = 8;
                 $start = $pager->findStart($limit); //echo $start; exit();
-                $tongsanpham = $SanPhamModel->countProductsInSubject($ma_chu_de);
-                //var_dump($tongsanpham); exit();
-                $pages = $pager->findPages($tongsanpham[0], $limit);
-                $PageLink = $pager->pageLink($_GET['page'], $pages, $chuoi);
+                $countProduct = $productModel->countProductsInSubject($idSubject);
+                //var_dump($countProduct); exit();
+                $pages = $pager->findPages($countProduct[0], $limit);
+                $pageLink = $pager->pageLink($_GET['page'], $pages, $chuoi);
                 
-                $DSSanPham = $SanPhamModel->getProductInSubject($ma_chu_de);
-                //var_dump($DSSanPham); exit();
+                $products = $productModel->getProductInSubject($idSubject);
+                //var_dump($products); exit();
 
                 $smarty = new SmartyController();
-                if ($DSSanPham) {
-                    $smarty->assign('DSSanPham', $DSSanPham);
-                    $smarty->assign('PageLink', $PageLink);
+                if ($products) {
+                    $smarty->assign('DSSanPham', $products);
+                    $smarty->assign('PageLink', $pageLink);
                 } else {
                     header('location:'.path); exit();
                 }
-                $smarty->assign('ChuDe', $ChuDe);
+                $smarty->assign('ChuDe', $subjects);
                 $smarty->display('front/product_in_category.tpl');
             } else {
                 header('loaction:'.path); exit();
@@ -165,65 +162,71 @@ class FrontController
             header('loaction:'.path); exit();
         }
     }
+
+    
+
     public function getProductDetails()
     {
         if (isset($_GET['key'])) {
-            $chuoi = $_GET['key'];
-            $mang = explode('-', $chuoi);
-            $id = $mang[count($mang) - 1];// $id: mã sản phẩm
-            $SanPhamModel = new ProductModel();
-            $san_pham = $SanPhamModel->getProductById($id); //var_dump($san_pham); exit();
+            $stringUrl = $_GET['key'];
+            //echo $stringUrl; exit();
+            $array = explode('-', $stringUrl);
+            $idProduct = $array[count($array) - 1];
+            // $idProduct: mã sản phẩm
+            $productModel = new ProductModel();
+            $products = $productModel->getProductById($idProduct); 
+            //var_dump($products); exit();
             
             //Hiển thị thông tin sách ra trình duyệt
             $smarty = new SmartyController();
-            if ($san_pham) {
-                $smarty->assign('san_pham', $san_pham);
+            if ($products) {
+                $smarty->assign('san_pham', $products);
                 //Sản phẩm cùng loại
-                $DSSanPhamCungLoai = $SanPhamModel->getProductsFromTheSameCat($id, $san_pham['ma_loai']); 
-                //var_dump($DSSanPhamCungLoai);exit();
-                if ($DSSanPhamCungLoai) {
-                    $smarty->assign('DSSanPhamCungLoai', $DSSanPhamCungLoai);
+                $productInTheSameCategory = $productModel->getProductsFromTheSameCat($idProduct, $products['ma_loai']); 
+                //var_dump($productInTheSameCategory);exit();
+                if ($productInTheSameCategory) {
+                    $smarty->assign('DSSanPhamCungLoai', $productInTheSameCategory);
                 }
             }
 
             //Thêm sách vào giỏ hàng
             if (isset($_POST['btnMua'])) {
-                $gio_hang = new Gio_hang();
-                $id = $san_pham['ma_san_pham'];
-                $ten = $san_pham['ten_san_pham'];
-                $dg = $san_pham['gia_ban'];
-                $sl = $_POST['soluong'];
-                $gio_hang->Them($id, $ten, $dg, $sl);
+                $shoppingCart = new Gio_hang();
+                $idProduct = $products['ma_san_pham'];
+                $nameProduct = $products['ten_san_pham'];
+                $price = $products['gia_ban'];
+                $number = $_POST['soluong'];
+                $shoppingCart->Them($idProduct, $nameProduct, $price, $number);
                 //var_dump($_SESSION['giohang']); exit();
             }
 
             //Khi form comment submit
             if (isset($_SESSION['khachhang']) && isset($_POST['btnBinhLuan'])) {
-                $khach_hang = $_SESSION['khachhang'];
-                //var_dump($khach_hang); exit();
-                $khach_hang_id = $khach_hang['ma_khach_hang'];
-                $sach_id = $san_pham['ma_san_pham'];
+                $clients = $_SESSION['khachhang'];
+                //var_dump($clients); exit();
+                $idClient = $clients['ma_khach_hang'];
+                $idProduct = $products['ma_san_pham'];
 
                 //cắm cờ
                 $err = false;
 
                 //validate tiêu đề không chứa các kí tự đặc biệt ảnh hưởng truy vấn csdl
-                $tieu_de = addslashes($_POST['tieu_de']);
-                if (empty($tieu_de)) {
+                $title = addslashes($_POST['tieu_de']);
+                if (empty($title)) {
                     $smarty->assign('message',"<span style='color:red'>Vui lòng nhập tiêu đề.</span>");
                     $err = true;
                 } else {
                     //validate mã hóa các thẻ html khi insert vào csdl
-                    $tieu_de = htmlspecialchars($tieu_de);
+                    $title = htmlspecialchars($title);
                 }
                 
                 //validate nội dung tin nhắn
-                $noi_dung = addslashes($_POST['noi_dung']);
-                if (empty($noi_dung)) {
+                $content = addslashes($_POST['noi_dung']);
+                if (empty($content)) {
                     $smarty->assign('message',"<span style='color:red'>Vui lòng nhập nội dung bình luận.</span>");
                     $err = true;
                 } else {
-                    $noi_dung = htmlentities($noi_dung);
+                    $content = htmlentities($content);
                 }
 
                 if ($err) {
@@ -231,19 +234,19 @@ class FrontController
                     $smarty->assign('message',"<span style='color:red'>Vui lòng nhập tiêu đề và nội dung đánh giá.</span>");
                 } else {
                     //nếu không có lỗi thì insert bình luận vào csdl
-                    $BinhLuanModel = new CommentModel();
-                    $BinhLuanModel->addComment($tieu_de, $noi_dung, $khach_hang_id, $sach_id);
+                    $commentModel = new CommentModel();
+                    $commentModel->addComment($title, $content, $idClient, $idProduct);
                     //gủi thông báo thành công ra trình duyệt
                     $smarty->assign('message', "<span style='color:red'>Cảm ơn đánh giá của bạn.</span>");
                 }
             }
 
             //Hiển thị comment ra trình duyệt
-            $BinhLuanModel = new CommentModel();
-            $DSBinhLuan = $BinhLuanModel->getComment($id);
-            //var_dump($DSBinhLuan); exit();
-            if ($DSBinhLuan) {
-                $smarty->assign('DSBinhLuan', $DSBinhLuan);
+            $commentModel = new CommentModel();
+            $comments = $commentModel->getComment($idProduct);
+            //var_dump($comments); exit();
+            if ($comments) {
+                $smarty->assign('DSBinhLuan', $comments);
             }
             
             $smarty->display('front/product_details.tpl');
@@ -251,6 +254,14 @@ class FrontController
             header('loaction:'.path); exit();
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // 29/9
+
+    
     public function getInfoCart() 
     {
         $gio_hang = new Gio_hang();
