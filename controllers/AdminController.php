@@ -495,7 +495,7 @@ class AdminController
     public function QuanTriChuDe()
     {
         $ChuDeModel = new ChuDeModel();
-        $DSChuDe = $ChuDeModel->DanhSachChuDe();
+        $DSChuDe = $ChuDeModel->getSubject();
         //var_dump($DSChuDe); exit();
         
         if ($DSChuDe) {
@@ -585,7 +585,7 @@ class AdminController
         }
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
         $ChuDeModel = new ChuDeModel();
-        $data = $ChuDeModel->ChuDeId($ma_chu_de); //var_dump($data); exit();
+        $data = $ChuDeModel->getSubjectID($ma_chu_de); //var_dump($data); exit();
         $hinh_cu = $data['hinh'];
         //var_dump($data['hinh']); exit();
         if (!$data) {

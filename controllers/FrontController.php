@@ -13,7 +13,7 @@ class FrontController
 	public function index()
 	{
         $ChuDeModel = new ChuDeModel();
-        $DSChuDe = $ChuDeModel->DanhSachChuDe(); //var_dump($DSChuDe); exit();
+        $DSChuDe = $ChuDeModel->getSubject(); //var_dump($DSChuDe); exit();
 		$smarty = new SmartyController;
         $smarty->assign('DSChuDe', $DSChuDe);
 		$smarty->display('trang-chu.tpl');
@@ -114,7 +114,7 @@ class FrontController
             $mang = explode('-', $chuoi);
             $ma_chu_de = $mang[count($mang)-1]; //echo $ma_chu_de; exit();
             $ChuDeModel = new ChuDeModel();
-            $ChuDe = $ChuDeModel->ChuDeId($ma_chu_de);
+            $ChuDe = $ChuDeModel->getSubjectID($ma_chu_de);
             //var_dump($ChuDe); exit();
             if ($ChuDe) {
                 $SanPhamModel = new SanPhamModel();
