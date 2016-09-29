@@ -649,7 +649,7 @@ class AdminController
     }
     public function QuanTriDonHang()
     {
-    	$DonHangModel = new DonHangModel();
+    	$DonHangModel = new InvoiceModel();
     	$DSHoaDon = $DonHangModel->getInvoices();
     	//var_dump($DSHoaDon); exit();
     	$smarty = new SmartyController();
@@ -664,7 +664,7 @@ class AdminController
     	if (isset($_GET['key'])) {
             //chua validate bien GET
     		$soHD = $_GET['key'];
-    		$DonHangModel = new DonHangModel();
+    		$DonHangModel = new InvoiceModel();
     		$ChiTietDonHang = $DonHangModel->getInfoInvoice($soHD);
     		//var_dump($ChiTietDonHang); exit();
     		if ($ChiTietDonHang) {
@@ -679,7 +679,7 @@ class AdminController
     }
     public function QuanTriYeuCauKhachHang()
     {
-        $LienHeModel = new LienHeModel();
+        $LienHeModel = new ContactModel();
         $DSYeuCauKhachHang = $LienHeModel->getRequireClient();
         //var_dump($DSYeuCauKhachHang); exit();
         $smarty = new SmartyController();

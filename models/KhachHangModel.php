@@ -1,6 +1,6 @@
 <?php
 include_once('models/Database.php');
-class KhachHangModel extends Database
+class ClientModel extends Database
 {
     public function getClient($data)
     {

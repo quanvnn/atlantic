@@ -1,6 +1,6 @@
 <?php
 include_once('models/Database.php');
-class DonHangModel extends Database
+class InvoiceModel extends Database
 {
     public function getInvoices()
     {

@@ -1,6 +1,6 @@
 <?php
 include_once('models/Database.php');
-class LienHeModel extends Database
+class ContactModel extends Database
 {
     public function getRequireClient()
     {

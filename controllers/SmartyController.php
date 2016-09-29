@@ -29,8 +29,8 @@ class SmartyController extends Smarty
             $email = addslashes($_POST['email']);
             $mat_khau = addslashes($_POST['mat_khau']);
 
-            $KhachHangModel = new KhachHangModel();
-            $dataKhachHang = $KhachHangModel->getKhachHangDangNhap($email, $mat_khau);
+            $KhachHangModel = new ClientModel();
+            $dataKhachHang = $KhachHangModel->getLogin($email, $mat_khau);
 
             //var_dump($dataKhachHang); exit();
             if ($dataKhachHang) {
