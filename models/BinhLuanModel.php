@@ -1,6 +1,6 @@
 <?php
 include_once('models/Database.php');
-class BinhLuanModel extends Database
+class CommentModel extends Database
 {
     public function addComment($tieu_de, $noi_dung, $khach_hang_id, $sach_id)
     {

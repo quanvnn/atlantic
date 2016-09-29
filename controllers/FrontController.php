@@ -212,7 +212,7 @@ class FrontController
                     $smarty->assign('message',"<span style='color:red'>Vui lòng nhập tiêu đề và nội dung đánh giá.</span>");
                 } else {
                     //nếu không có lỗi thì insert bình luận vào csdl
-                    $BinhLuanModel = new BinhLuanModel();
+                    $BinhLuanModel = new CommentModel();
                     $BinhLuanModel->addComment($tieu_de, $noi_dung, $khach_hang_id, $sach_id);
                     //gủi thông báo thành công ra trình duyệt
                     $smarty->assign('message', "<span style='color:red'>Cảm ơn đánh giá của bạn.</span>");
@@ -220,7 +220,7 @@ class FrontController
             }
 
             //Hiển thị comment ra trình duyệt
-            $BinhLuanModel = new BinhLuanModel();
+            $BinhLuanModel = new CommentModel();
             $DSBinhLuan = $BinhLuanModel->getComment($id);
             //var_dump($DSBinhLuan); exit();
             if ($DSBinhLuan) {

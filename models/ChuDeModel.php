@@ -1,6 +1,6 @@
 <?php
 include_once('models/Database.php');
-class ChuDeModel extends Database
+class SubjectModel extends Database
 {
     public function getSubject()
     {

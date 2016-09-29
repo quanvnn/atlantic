@@ -185,8 +185,8 @@ class AdminController
         //hiển thị list loại sản phẩm
         $LoaiSanPhamModel = new LoaiSanPhamModel();
         $smarty->assign('DSLoaiSanPham', $LoaiSanPhamModel->getCat());
-        $ChuDeModel = new ChuDeModel();
-        $smarty->assign('DanhSachChuDe', $ChuDeModel->DanhSachChuDe());
+        $ChuDeModel = new SubjectModel();
+        $smarty->assign('DanhSachChuDe', $ChuDeModel->getSubject());
         $smarty->assign('alert', $alert);
         $smarty->display('admin/them-san-pham.tpl');
     }
@@ -212,12 +212,12 @@ class AdminController
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); 
         //var_dump($DSLoaiSanPham); exit();
         //hiển thị list danh sách chủ đề ra trình duyệt để lựa chọn update
-        $ChuDeModel = new ChuDeModel();
-        $DanhSachChuDe = $ChuDeModel->DanhSachChuDe();
+        $ChuDeModel = new SubjectModel();
+        $DanhSachChuDe = $ChuDeModel->getSubject();
         //var_dump($DSChuDe); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
         $SanPhamModel = new SanPhamModel();
-        $data = $SanPhamModel->SanPhamId($key); //var_dump($data); exit();
+        $data = $SanPhamModel->getProductById($key); //var_dump($data); exit();
         $hinh_cu = $data['hinh'];
         //var_dump($data['hinh']); exit();
         if (! $data) {
@@ -494,7 +494,7 @@ class AdminController
     }
     public function QuanTriChuDe()
     {
-        $ChuDeModel = new ChuDeModel();
+        $ChuDeModel = new SubjectModel();
         $DSChuDe = $ChuDeModel->getSubject();
         //var_dump($DSChuDe); exit();
         
@@ -584,7 +584,7 @@ class AdminController
             exit();
         }
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
-        $ChuDeModel = new ChuDeModel();
+        $ChuDeModel = new SubjectModel();
         $data = $ChuDeModel->getSubjectID($ma_chu_de); //var_dump($data); exit();
         $hinh_cu = $data['hinh'];
         //var_dump($data['hinh']); exit();
@@ -690,7 +690,7 @@ class AdminController
     }
     public function QuanTriBinhLuan()
     {
-        $BinhLuanModel = new BinhLuanModel();
+        $BinhLuanModel = new CommentModel();
         $DSBinhLuanAdmin = $BinhLuanModel->getCommentAdmin();
         //var_dump($DSBinhLuanAdmin); exit();
         $smarty = new SmartyController();
@@ -706,7 +706,7 @@ class AdminController
             $id = $_GET['key'];
             //var_dump($id); exit();
             $smarty = new SmartyController();
-            $BinhLuanModel = new BinhLuanModel();
+            $BinhLuanModel = new CommentModel();
             $BinhLuanModel->deleteComment($id);
             header('location:'.path.'/quan-tri/binh-luan.html');
             exit();
