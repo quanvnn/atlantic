@@ -309,7 +309,7 @@ class FrontController
             {
                 //insert dữ liệu khách hàng vào csdl
                 $KhachHangModel = new KhachHangModel();
-                $data['ma_khach_hang'] = $KhachHangModel->ThemKhachHang($data);
+                $data['ma_khach_hang'] = $KhachHangModel->getClient($data);
                 $_SESSION['khachhang'] = $data;
                 //var_dump($_SESSION['khachhang']); exit();
                 $smarty->assign('message_dangky', "<span style='color:green'>Đăng ký thành công.</span>");
@@ -326,7 +326,7 @@ class FrontController
             $mat_khau = addslashes($_POST['mat_khau']);
 
             $KhachHangModel = new KhachHangModel();
-            $data = $KhachHangModel->getKhachHangDangNhap($email, $mat_khau);
+            $data = $KhachHangModel->getLogin($email, $mat_khau);
 
             //var_dump($data); exit();
             if ($data) {
@@ -373,7 +373,7 @@ class FrontController
                                 );
                 //var_dump($dataHoaDon); exit();
                 $KhachHangModel = new KhachHangModel();
-                if($SoHD = $KhachHangModel->ThemDonDatHang($dataHoaDon))
+                if($SoHD = $KhachHangModel->addInvoices($dataHoaDon))
                 {
                     $gio_hang = new Gio_hang();
                     $ttGH = $gio_hang->ThongTinGioHang();
@@ -385,7 +385,7 @@ class FrontController
                                 'ma_san_pham' =>$msp,
                                 'so_luong'    =>$tt[1],
                                 'don_gia'     =>$tt[0],);
-                        $KhachHangModel->ThemCTDonDatHang($ChiTietHD);
+                        $KhachHangModel->addDetailInvoices($ChiTietHD);
                     }
                     $gio_hang->HuyGioHang();
                     header('location:'.path.'/khach-hang/thong-tin-don-hang/'.$SoHD); exit();
@@ -437,7 +437,7 @@ class FrontController
                 if (! $dataErr) {
                     //insert dữ liệu khách hàng vào csdl
                     $KhachHangModel = new KhachHangModel();
-                    $data['ma_khach_hang'] = $KhachHangModel->ThemKhachHang($data);
+                    $data['ma_khach_hang'] = $KhachHangModel->getClient($data);
                     $_SESSION['khachhang'] = $data;
                     //var_dump($_SESSION['khachhang']); exit();
                     $smarty->display('front/dat-hang.tpl'); exit();
@@ -454,7 +454,7 @@ class FrontController
                 $mat_khau = addslashes($_POST['mat_khau']);
 
                 $KhachHangModel = new KhachHangModel();
-                $data = $KhachHangModel->getKhachHangDangNhap($email, $mat_khau);
+                $data = $KhachHangModel->getLogin($email, $mat_khau);
 
                 //var_dump($data); exit();
                 if ($data) {
@@ -479,7 +479,7 @@ class FrontController
             $soHD = $_GET['key'];
             //echo $soHD; exit;
             $KhachHangModel = new KhachHangModel();
-            $TTDonDatHang = $KhachHangModel->TTDonDatHang($soHD);
+            $TTDonDatHang = $KhachHangModel->getInfoInvoicesByID($soHD);
             //var_dump($TTDonDatHang); exit;
             if (! $TTDonDatHang) {
                 header('location:'.path); exit();
@@ -616,7 +616,7 @@ class FrontController
             if (! $dataErr) {
                 //nếu không có lỗi xảy ra thì insert yêu cầu của khách hàng vào csdl
                 $KhachHangModel = new KhachHangModel();
-                if ($KhachHangModel->GuiYeuCau($data)) {
+                if ($KhachHangModel->addRequire($data)) {
                     $smarty->assign('message',"<span style='color:blue'>Cảm ơn tin nhắn của bạn, chúng tôi sẽ hồi đáp trong thời gian sớm nhất.</span>");
                 }
             } else {
@@ -646,7 +646,7 @@ class FrontController
             //Nếu email hợp lệ thì check email trong csdl
             if (! $err) {
                 $KhachHangModel = new KhachHangModel();
-                $CheckEmail = $KhachHangModel->CheckEmail($email);
+                $CheckEmail = $KhachHangModel->checkEmail($email);
                 if ($CheckEmail) {
                     //Mã hóa email
                     $email = $CheckEmail['email'];
@@ -720,7 +720,7 @@ class FrontController
                 if ($password == $confirmpassword) {
                     //Update password vao csdl
                     $KhachHangModel = new KhachHangModel();
-                    if ($KhachHangModel->UpdatePassWord($password,$postemail)){
+                    if ($KhachHangModel->updatePassWord($password,$postemail)){
                         $smarty->assign('alert',"Your password has been successfully reset.");
                     }
                 } else {
