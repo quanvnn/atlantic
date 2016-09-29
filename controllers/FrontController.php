@@ -16,7 +16,7 @@ class FrontController
         $DSChuDe = $ChuDeModel->getSubject(); //var_dump($DSChuDe); exit();
 		$smarty = new SmartyController;
         $smarty->assign('DSChuDe', $DSChuDe);
-		$smarty->display('trang-chu.tpl');
+		$smarty->display('home.tpl');
 	}
 	public function SanPhamTheoLoaiCha()
 	{
@@ -63,8 +63,8 @@ class FrontController
                 }
 
                 $smarty->assign('LoaiCha', $LoaiCha);
-                $smarty->display('san-pham-theo-loai.tpl');
-            }
+                $smarty->display('front/product_in_category.tpl');
+            }  
         }
 	}
     public function SanPhamTheoLoaiCon()
@@ -227,7 +227,7 @@ class FrontController
                 $smarty->assign('DSBinhLuan', $DSBinhLuan);
             }
             
-            $smarty->display('chi-tiet-san-pham.tpl');
+            $smarty->display('front/product_details.tpl');
         } else {
             header('loaction:'.path); exit();
         }
@@ -255,7 +255,7 @@ class FrontController
             $gio_hang->TongSoTien();
             $smarty->assign('ttgh', $ttgh);
         }
-        $smarty->display('front/gio-hang.tpl');
+        $smarty->display('front/shopping_cart.tpl');
     }
     public function HuyGioHang() 
     {
@@ -343,7 +343,7 @@ class FrontController
                 $smarty->assign('message_dangnhap', "<span style='color:red'>Vui lòng kiểm tra email và mật khẩu.</span>");
             }
         }
-        $smarty->display('front/dang-ky.tpl');
+        $smarty->display('front/login.tpl');
     }
     public function DangXuat()
     {
@@ -357,7 +357,7 @@ class FrontController
     {
         //kiểm tra tồn tại session[khach_hang], nếu khách hàng đã đăng nhập thì chuyển sang trang yêu cầu khách hàng cung cấp tên người nhận, điện thoại, địa chỉ
         //sau đó gửi mail cho khách hàng để hoàn tất
-        //nếu khách hàng chưa đăng nhập thì chuyển sang trang dang-ky.tpl yêu cầu khách hàng đăng nhập nếu đã có tài khoản, hoặc đăng ký khi chưa có tài khoản
+        //nếu khách hàng chưa đăng nhập thì chuyển sang trang login.tpl yêu cầu khách hàng đăng nhập nếu đã có tài khoản, hoặc đăng ký khi chưa có tài khoản
         //đăng ký xong hay đăng nhập xong thì chuyển sang trang yêu cầu khách hàng cung cấp tên người nhận, điện thoại, địa chỉ
         //sau đó gửi mail cho khách hàng để hoàn tất
         if (isset($_SESSION['khachhang'])) {
@@ -392,7 +392,7 @@ class FrontController
                 }
             }
             $smarty = new SmartyController();
-            $smarty->display('front/dat-hang.tpl');
+            $smarty->display('front/login.tpl');
         } else {
             $smarty = new SmartyController();
             //form đăng ký submit
@@ -440,7 +440,7 @@ class FrontController
                     $data['ma_khach_hang'] = $KhachHangModel->getClient($data);
                     $_SESSION['khachhang'] = $data;
                     //var_dump($_SESSION['khachhang']); exit();
-                    $smarty->display('front/dat-hang.tpl'); exit();
+                    $smarty->display('front/login.tpl'); exit();
                 } else {
                     $smarty->assign('dataErrDangKy', $dataErr);
                     $smarty->assign('dataDangKy', $data);
@@ -465,12 +465,12 @@ class FrontController
                                     'email'           =>$email);
                     $_SESSION['khachhang'] = $arrTTKhachHang;
                     //var_dump($_SESSION['khachhang']); exit();
-                    $smarty->display('front/dat-hang.tpl'); exit();
+                    $smarty->display('front/login.tpl'); exit();
                 } else {
                     $smarty->assign('message_dangnhap',"<span style='color:red'>Vui lòng kiểm tra email và mật khẩu.</span>");
                 }
             }
-            $smarty->display('front/dang-ky.tpl');
+            $smarty->display('front/login.tpl');
         }
     }
     public function ThongTinDonHang()
@@ -488,7 +488,7 @@ class FrontController
             $smarty->assign('DonDatHang', $TTDonDatHang);
             //gui mail thong tin don hang cho khach hang
             $this->guiMail($TTDonDatHang);
-            $smarty->display('thong-tin-don-hang.tpl');
+            $smarty->display('front/invoice_details.tpl');
         }
     }
     public function guiMail($HoaDon)
@@ -571,7 +571,7 @@ class FrontController
     public function HoTroKhachHang()
     {
         $smarty = new SmartyController();
-        $smarty->display('front/ho-tro-khach-hang.tpl');
+        $smarty->display('front/client_care.tpl');
     }
     public function GuiYeuCau()
     {
@@ -624,7 +624,7 @@ class FrontController
                 $smarty->assign('data', $data);
             }
         }
-        $smarty->display('front/gui-yeu-cau.tpl');
+        $smarty->display('front/send_require.tpl');
     }
     public function QuenMatKhau()
     {
@@ -660,7 +660,7 @@ class FrontController
                 }
             }
         }
-        $smarty->display('front/quen-mat-khau.tpl');
+        $smarty->display('front/forgot.tpl');
     }
     public function SendMailResetPassword($email,$hash)
     {
@@ -730,7 +730,7 @@ class FrontController
                 $smarty->assign('alert',"Your password reset key is invalid.");
             }
         }
-        $smarty->display('front/dat-lai-mat-khau.tpl');
+        $smarty->display('front/reset_password.tpl');
     }
 }// ./class FrontController
 ?>

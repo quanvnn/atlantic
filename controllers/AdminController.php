@@ -3,8 +3,8 @@ include_once('controllers/SmartyController.php');
 include_once('controllers/HelperController.php');
 include_once('models/CategoryModel.php');
 include_once('models/CommentModel.php');
-include_once('models/SanPhamModel.php');
-include_once('models/DonHangModel.php');
+include_once('models/ProductModel.php');
+include_once('models/InvoiceModel.php');
 include_once('models/ContactModel.php');
 include_once('models/SubjectModel.php');
 include_once('models/AdminModel.php');
@@ -62,12 +62,12 @@ class AdminController
             else
                 $smarty->assign('err','Vui lòng kiểm tra lại tên đăng nhập và mật khẩu.');
         }
-        $smarty->display('admin/dang-nhap.tpl');
+        $smarty->display('admin/login.tpl');
     }
     public function QuanTri()
     {
         // kiểm tra tồn tại của session.nguoi_dung
-        if (!isset($_SESSION['nguoi_dung'])) {
+        if (! isset($_SESSION['nguoi_dung'])) {
             // var_dump($_SESSION['nguoi_dung']);exit();
             // bắt buộc đăng nhập
             header('location:'.path.'/quan-tri/dang-nhap.html'); exit();
@@ -92,7 +92,7 @@ class AdminController
         $smarty = new SmartyController();
         if ($DSSanPham) {
             $smarty->assign('DSSanPham', $DSSanPham);
-            $smarty->display('admin/san-pham.tpl');    
+            $smarty->display('admin/product.tpl');    
         } else {
             header('location:'.path.'/quan-tri/san-pham.html'); exit();
         }
@@ -188,7 +188,7 @@ class AdminController
         $ChuDeModel = new SubjectModel();
         $smarty->assign('DanhSachChuDe', $ChuDeModel->getSubject());
         $smarty->assign('alert', $alert);
-        $smarty->display('admin/them-san-pham.tpl');
+        $smarty->display('admin/add_product.tpl');
     }
     public function QuanTriCapNhatSanPham()
     {
@@ -285,7 +285,7 @@ class AdminController
         $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
         $smarty->assign('DanhSachChuDe', $DanhSachChuDe);
         $smarty->assign('alert', $alert);
-        $smarty->display('admin/cap-nhat-san-pham.tpl');
+        $smarty->display('admin/update_product.tpl');
     }
     public function QuanTriLoaiSanPham()
     {
@@ -294,7 +294,7 @@ class AdminController
         $smarty = new SmartyController();
         if ($DSLoaiSanPham) {
             $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
-            $smarty->display('admin/loai-san-pham.tpl');    
+            $smarty->display('admin/categories.tpl');    
         } else {
             header('location:'.path.'/quan-tri/loai-san-pham.html'); exit();
         }         
@@ -380,7 +380,7 @@ class AdminController
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat();
         //var_dump($DSLoaiSanPham); exit();
         $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
-        $smarty->display('admin/them-loai-san-pham.tpl');
+        $smarty->display('admin/add_category.tpl');
     }
     public function QuanTriCapNhatLoaiSanPham()
     {
@@ -435,7 +435,7 @@ class AdminController
         $smarty->assign('mangErr', $mangErr);
         $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
         $smarty->assign('alert', $alert);
-        $smarty->display('admin/cap-nhat-loai-san-pham.tpl');
+        $smarty->display('admin/update_category.tpl');
     }
     public function QuanTriCapNhatLoaiCon()
     {
@@ -490,7 +490,7 @@ class AdminController
         $smarty->assign('mangErr', $mangErr);
         $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
         $smarty->assign('alert', $alert);
-        $smarty->display('admin/cap-nhat-loai-con.tpl');
+        $smarty->display('admin/update_subcategory.tpl');
     }
     public function QuanTriChuDe()
     {
@@ -501,7 +501,7 @@ class AdminController
         if ($DSChuDe) {
             $smarty = new SmartyController();
             $smarty->assign('DSChuDe', $DSChuDe);
-            $smarty->display('admin/chu_de.tpl');
+            $smarty->display('admin/subject.tpl');
         } else {
             header('location:'.path.'/quan-tri/them-chu-de-sach.html');
             exit();
@@ -509,7 +509,7 @@ class AdminController
     }
     public function QuanTriThemChuDe()
     {
-        header('location:'.path.'/quan-tri/chu-de.html');
+        header('location:'.path.'/quan-tri/subject.html');
         // $alert ='';
         // $data = array(
         //         'ten_chu_de'=>'',
@@ -569,7 +569,7 @@ class AdminController
         // $smarty->assign('mangErr',$mangErr);
         // //hiển thị list loại sản phẩm
         // $smarty->assign('alert',$alert);
-        // $smarty->display('admin/them-chu-de-san-pham.tpl');
+        // $smarty->display('admin/add_subject.tpl');
     }
     public function QuanTriCapNhatChuDe()
     {
@@ -645,7 +645,7 @@ class AdminController
         $smarty->assign('data', $data);
         $smarty->assign('mangErr', $mangErr);
         $smarty->assign('alert', $alert);
-        $smarty->display('admin/cap-nhat-chu-de.tpl');
+        $smarty->display('admin/update_subject.tpl');
     }
     public function QuanTriDonHang()
     {
@@ -656,7 +656,7 @@ class AdminController
     	if ($DSHoaDon) {
     		$smarty->assign('DSHoaDon', $DSHoaDon);
     	}
-    	$smarty->display('admin/don-hang.tpl');
+    	$smarty->display('admin/invoices.tpl');
     }
     public function QuanTriChiTietDonHang()
     {
@@ -675,7 +675,7 @@ class AdminController
     	} else {
     		header('location:'.path.'/quan-tri/don-hang.html'); exit();
     	}
-    	$smarty->display('admin/chi-tiet-don-hang.tpl');
+    	$smarty->display('admin/invoice_details.tpl');
     }
     public function QuanTriYeuCauKhachHang()
     {
@@ -686,7 +686,7 @@ class AdminController
         if ($DSYeuCauKhachHang) {
             $smarty->assign('DSYeuCauKhachHang', $DSYeuCauKhachHang);
         }
-        $smarty->display('admin/lien-he.tpl');
+        $smarty->display('admin/contact.tpl');
     }
     public function QuanTriBinhLuan()
     {
@@ -698,7 +698,7 @@ class AdminController
         {
             $smarty->assign('DSBinhLuanAdmin', $DSBinhLuanAdmin);
         }
-        $smarty->display('admin/binh-luan.tpl');
+        $smarty->display('admin/comment.tpl');
     }
     public function QuanTriXoaBinhLuan()
     {
