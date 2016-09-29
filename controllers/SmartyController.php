@@ -19,7 +19,7 @@ class SmartyController extends Smarty
         $this->setConfigDir('views/configs');
         $this->assign('path', path);
 
-        $LoaiSanPhamModel = new LoaiSanPhamModel();
+        $LoaiSanPhamModel = new CategoryModel();
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); 
         //var_dump($DSLoaiSanPham); exit();
         $this->assign('DSLoaiSanPham', $DSLoaiSanPham);

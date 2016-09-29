@@ -183,7 +183,7 @@ class AdminController
         //hiển thị mảng báo lỗi
         $smarty->assign('mangErr', $mangErr);
         //hiển thị list loại sản phẩm
-        $LoaiSanPhamModel = new LoaiSanPhamModel();
+        $LoaiSanPhamModel = new CategoryModel();
         $smarty->assign('DSLoaiSanPham', $LoaiSanPhamModel->getCat());
         $ChuDeModel = new SubjectModel();
         $smarty->assign('DanhSachChuDe', $ChuDeModel->getSubject());
@@ -208,7 +208,7 @@ class AdminController
             exit();
         }
         //hiển thị list danh sách loại ra trình duyệt để lựa chọn update
-        $LoaiSanPhamModel = new LoaiSanPhamModel();
+        $LoaiSanPhamModel = new CategoryModel();
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); 
         //var_dump($DSLoaiSanPham); exit();
         //hiển thị list danh sách chủ đề ra trình duyệt để lựa chọn update
@@ -289,7 +289,7 @@ class AdminController
     }
     public function QuanTriLoaiSanPham()
     {
-        $LoaiSanPhamModel = new LoaiSanPhamModel();
+        $LoaiSanPhamModel = new CategoryModel();
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); //var_dump($getCat); exit();
         $smarty = new SmartyController();
         if ($DSLoaiSanPham) {
@@ -376,7 +376,7 @@ class AdminController
         //hiển thị mảng báo lỗi
         $smarty->assign('mangErr', $mangErr);
         $smarty->assign('alert', $alert);
-        $LoaiSanPhamModel = new LoaiSanPhamModel();
+        $LoaiSanPhamModel = new CategoryModel();
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat();
         //var_dump($DSLoaiSanPham); exit();
         $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
@@ -392,7 +392,7 @@ class AdminController
             exit();
         }
         //hiển thị list danh sách loại ra trình duyệt để lựa chọn update
-        $LoaiSanPhamModel = new LoaiSanPhamModel();
+        $LoaiSanPhamModel = new CategoryModel();
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat();
         //var_dump($DSLoaiSanPham); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
@@ -447,7 +447,7 @@ class AdminController
             exit();
         }
         //hiển thị list danh sách loại ra trình duyệt để lựa chọn update
-        $LoaiSanPhamModel = new LoaiSanPhamModel();
+        $LoaiSanPhamModel = new CategoryModel();
         $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); //var_dump($getCat); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
         $data = $LoaiSanPhamModel->getCatID($key); //var_dump($data); exit();

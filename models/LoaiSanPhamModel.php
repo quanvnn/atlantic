@@ -1,7 +1,7 @@
 <?php
 
 include_once('models/Database.php');
-class LoaiSanPhamModel extends Database
+class CategoryModel extends Database
 {
     public function getCat()
     {

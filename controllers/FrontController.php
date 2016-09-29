@@ -27,7 +27,7 @@ class FrontController
         if (isset($_GET['key'])) {
             
             $chuoi = $_GET['key']; //echo $chuoi; exit();
-            $LoaiSanPhamModel = new LoaiSanPhamModel();
+            $LoaiSanPhamModel = new CategoryModel();
             $LoaiCha = $LoaiSanPhamModel->getCatUrl($chuoi); //var_dump($LoaiCha); exit();
 
             if ($LoaiCha) {
@@ -72,7 +72,7 @@ class FrontController
         if (isset($_GET['key'])) 
         {
             $chuoi = $_GET['key'];
-            $LoaiSanPhamModel = new LoaiSanPhamModel();
+            $LoaiSanPhamModel = new CategoryModel();
             $LoaiCon = $LoaiSanPhamModel->getCatUrl($chuoi);
             //var_dump($LoaiCon); exit();
             if ($LoaiCon) {
