@@ -18,7 +18,7 @@ class FrontController
         $smarty->assign('DSChuDe', $DSChuDe);
 		$smarty->display('home.tpl');
 	}
-	public function SanPhamTheoLoaiCha()
+	public function getProductsInCat()
 	{
 		//sản phẩm theo loại cha chính là danh sách sản phẩm theo loại con của thằng loại cha
         //nhận url loại cha từ GET -> truy xuất mã loại cha -> truy xuất danh sách loại con dựa vào mã loại cha
@@ -67,7 +67,7 @@ class FrontController
             }  
         }
 	}
-    public function SanPhamTheoLoaiCon()
+    public function getProductsInSubCat()
     {
         if (isset($_GET['key'])) 
         {
@@ -99,7 +99,7 @@ class FrontController
 
                 $smarty->assign('LoaiCon', $LoaiCon);
                 $smarty->assign('LoaiCha', $LoaiCha);
-                $smarty->display('san-pham-theo-loai.tpl');
+                $smarty->display('front/product_in_category.tpl');
             } else {
                 header('loaction:'.path); exit();
             }
@@ -107,7 +107,7 @@ class FrontController
             header('loaction:'.path); exit();
         }
     }
-    public function SanPhamTheoChuDe()
+    public function getProductInSubject()
     {
         if (isset($_GET['key'])) {
             $chuoi = $_GET['key']; //echo $chuoi; exit();
@@ -138,7 +138,7 @@ class FrontController
                     header('location:'.path); exit();
                 }
                 $smarty->assign('ChuDe', $ChuDe);
-                $smarty->display('san-pham-theo-loai.tpl');
+                $smarty->display('front/product_in_category.tpl');
             } else {
                 header('loaction:'.path); exit();
             }
@@ -146,7 +146,7 @@ class FrontController
             header('loaction:'.path); exit();
         }
     }
-    public function ChiTietSanPham()
+    public function getProductDetails()
     {
         if (isset($_GET['key'])) {
             $chuoi = $_GET['key'];
@@ -232,7 +232,7 @@ class FrontController
             header('loaction:'.path); exit();
         }
     }
-    public function ThongTinGioHang() 
+    public function getInfoCart() 
     {
         $gio_hang = new Gio_hang();
         if (isset($_POST['btnCapNhat'])) {
@@ -257,13 +257,13 @@ class FrontController
         }
         $smarty->display('front/shopping_cart.tpl');
     }
-    public function HuyGioHang() 
+    public function deleteCart() 
     {
         $gio_hang = new Gio_hang();
         $gio_hang->HuyGioHang();
         header('location:'.path.'/khach-hang/gio-hang');
     }
-    public function DangKy()
+    public function createAccount()
     {
         $smarty = new SmartyController();
         //form đăng ký submit
@@ -345,7 +345,7 @@ class FrontController
         }
         $smarty->display('front/login.tpl');
     }
-    public function DangXuat()
+    public function logoutClient()
     {
         if (isset($_SESSION['khachhang'])) {
             session_destroy();
@@ -353,15 +353,16 @@ class FrontController
         }
         header('location:'.path);
     }
-    public function DatHang()
+    public function checkout()
     {
         //kiểm tra tồn tại session[khach_hang], nếu khách hàng đã đăng nhập thì chuyển sang trang yêu cầu khách hàng cung cấp tên người nhận, điện thoại, địa chỉ
         //sau đó gửi mail cho khách hàng để hoàn tất
         //nếu khách hàng chưa đăng nhập thì chuyển sang trang login.tpl yêu cầu khách hàng đăng nhập nếu đã có tài khoản, hoặc đăng ký khi chưa có tài khoản
         //đăng ký xong hay đăng nhập xong thì chuyển sang trang yêu cầu khách hàng cung cấp tên người nhận, điện thoại, địa chỉ
         //sau đó gửi mail cho khách hàng để hoàn tất
-        if (isset($_SESSION['khachhang'])) {
-
+        if (isset($_SESSION['khachhang'])) 
+        {
+            //var_dump($_SESSION['khachhang']); exit();
             if (isset($_POST['btnDatHang'])) {
                 $dataKhachHang = $_SESSION['khachhang'];
                 $dataHoaDon = array(
@@ -392,8 +393,10 @@ class FrontController
                 }
             }
             $smarty = new SmartyController();
-            $smarty->display('front/login.tpl');
-        } else {
+            $smarty->display('front/checkout.tpl');
+        } 
+        else 
+        {
             $smarty = new SmartyController();
             //form đăng ký submit
             if (isset($_POST['btnDangKy'])) {
@@ -440,7 +443,7 @@ class FrontController
                     $data['ma_khach_hang'] = $KhachHangModel->getClient($data);
                     $_SESSION['khachhang'] = $data;
                     //var_dump($_SESSION['khachhang']); exit();
-                    $smarty->display('front/login.tpl'); exit();
+                    $smarty->display('front/checkout.tpl'); exit();
                 } else {
                     $smarty->assign('dataErrDangKy', $dataErr);
                     $smarty->assign('dataDangKy', $data);
@@ -465,7 +468,7 @@ class FrontController
                                     'email'           =>$email);
                     $_SESSION['khachhang'] = $arrTTKhachHang;
                     //var_dump($_SESSION['khachhang']); exit();
-                    $smarty->display('front/login.tpl'); exit();
+                    $smarty->display('front/checkout.tpl'); exit();
                 } else {
                     $smarty->assign('message_dangnhap',"<span style='color:red'>Vui lòng kiểm tra email và mật khẩu.</span>");
                 }
@@ -473,7 +476,7 @@ class FrontController
             $smarty->display('front/login.tpl');
         }
     }
-    public function ThongTinDonHang()
+    public function getInfoInvoice()
     {
         if (isset($_GET['key'])) {
             $soHD = $_GET['key'];
@@ -568,12 +571,12 @@ class FrontController
         ';
         return $noi_dung;
     }
-    public function HoTroKhachHang()
+    public function careClient()
     {
         $smarty = new SmartyController();
         $smarty->display('front/client_care.tpl');
     }
-    public function GuiYeuCau()
+    public function sendRequest()
     {
         $smarty = new SmartyController();
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -626,7 +629,7 @@ class FrontController
         }
         $smarty->display('front/send_require.tpl');
     }
-    public function QuenMatKhau()
+    public function forgotPassWord()
     {
         $smarty = new SmartyController();
         if (isset($_POST['btnQuenMatKhau'])) {
@@ -653,7 +656,7 @@ class FrontController
                     $salt = "498#2D83B631%3800EBD!801600D*7E3CC13";
                     $hash = hash('sha512', $salt.$email);
                     //Gửi link reset password qua mail cho khách hàng
-                    $this->SendMailResetPassword($email,$hash);
+                    $this->sendMailResetPassword($email,$hash);
                     $smarty->assign('alert', "Vui lòng check mail để đặt lại mật khẩu.");
                 } else {
                     $smarty->assign('alert', "Tài khoản này không tồn tại, <a href='".path."/khach-hang/dang-ky'>đăng ký.</a>");
@@ -662,7 +665,7 @@ class FrontController
         }
         $smarty->display('front/forgot.tpl');
     }
-    public function SendMailResetPassword($email,$hash)
+    public function sendMailResetPassword($email,$hash)
     {
         //var_dump($HoaDon); exit;
         require 'library/PHPMailer/PHPMailerAutoload.php';
@@ -699,7 +702,7 @@ class FrontController
         $noi_dung = "Dear user,\n\nIf this e-mail does not apply to you please ignore it. It appears that you have requested a password reset at our website www.yoursitehere.com\n\nTo reset your password, please click the link below. If you cannot click it, please paste it into your web browser's address bar.\n\n" . $url . "\n\nThanks,\nThe Administration";
         return $noi_dung;
     }
-    public function ResetPassWord()
+    public function resetPassWord()
     {
         $smarty = new SmartyController();
         if (isset($_POST['btnResetPassWord'])) {

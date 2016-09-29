@@ -6,34 +6,34 @@ if (isset($_GET['kihieu'])) {
     //echo $_GET['page']; exit();
     switch ($_GET['kihieu']) {
         case 'ho-tro-khach-hang':
-            $FrontController->HoTroKhachHang(); break;
+            $FrontController->careClient(); break;
         case 'gui-yeu-cau':
-            $FrontController->GuiYeuCau(); break;
+            $FrontController->sendRequest(); break;
         case 'dang-ky':
-            $FrontController->DangKy(); break;
+            $FrontController->createAccount(); break;
         case 'gio-hang':
-            $FrontController->ThongTinGioHang(); break;
+            $FrontController->getInfoCart(); break;
         case 'huy-gio-hang':
-            $FrontController->HuyGioHang(); break;
+            $FrontController->deleteCart(); break;
         case 'dat-hang':
-            $FrontController->DatHang(); break;
+            $FrontController->checkout(); break;
         case 'dang-xuat':
-            $FrontController->DangXuat(); break;
+            $FrontController->logoutClient(); break;
         case 'thong-tin-don-hang':
-            $FrontController->ThongTinDonHang(); break;
+            $FrontController->getInfoInvoice(); break;
         case 'quen-mat-khau':
-            $FrontController->QuenMatKhau(); break;
+            $FrontController->forgotPassWord(); break;
         
         case 'san-pham-loai-cha':
-            $FrontController->SanPhamTheoLoaiCha(); break;
+            $FrontController->getProductsInCat(); break;
         case 'san-pham-loai-con':
-            $FrontController->SanPhamTheoLoaiCon(); break;
+            $FrontController->getProductsInSubCat(); break;
         case 'chi-tiet-san-pham':
-            $FrontController->ChiTietSanPham(); break;
+            $FrontController->getProductDetails(); break;
         case 'san-pham-theo-chu-de':
-            $FrontController->SanPhamTheoChuDe(); break;
+            $FrontController->getProductInSubject(); break;
         case 'reset-password':
-            $FrontController->ResetPassWord(); break;
+            $FrontController->resetPassWord(); break;
     }
 }
 else
