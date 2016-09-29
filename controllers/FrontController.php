@@ -44,7 +44,7 @@ class FrontController
                     }
                     // Tách mảng mã loại con thành 1 chuỗi
                     $chuoiMaLoai = implode(',', $mangMaLoai); //echo $chuoiMaLoai; exit();
-                    $SanPhamModel = new SanPhamModel();
+                    $SanPhamModel = new ProductModel();
                     // phân trang
                     $pager = new Pager();
                     $limit = 8;
@@ -78,7 +78,7 @@ class FrontController
             if ($LoaiCon) {
                 $LoaiCha = $LoaiSanPhamModel->getCatID($LoaiCon['ma_loai_cha']);//dùng cho breadcrumb
                 
-                $SanPhamModel = new SanPhamModel();
+                $SanPhamModel = new ProductModel();
                 // phân trang
                 $pager = new Pager();
                 $limit = 12;
@@ -117,7 +117,7 @@ class FrontController
             $ChuDe = $ChuDeModel->getSubjectID($ma_chu_de);
             //var_dump($ChuDe); exit();
             if ($ChuDe) {
-                $SanPhamModel = new SanPhamModel();
+                $SanPhamModel = new ProductModel();
                 
                 $pager = new Pager();
                 $limit = 8;
@@ -152,7 +152,7 @@ class FrontController
             $chuoi = $_GET['key'];
             $mang = explode('-', $chuoi);
             $id = $mang[count($mang) - 1];// $id: mã sản phẩm
-            $SanPhamModel = new SanPhamModel();
+            $SanPhamModel = new ProductModel();
             $san_pham = $SanPhamModel->getProductById($id); //var_dump($san_pham); exit();
             
             //Hiển thị thông tin sách ra trình duyệt

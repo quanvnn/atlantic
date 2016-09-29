@@ -101,7 +101,7 @@ class AdminController
     {
         if (isset($_GET['key'])) {
             $msp = $_GET['key'];
-            $SanPhamModel = new SanPhamModel();
+            $SanPhamModel = new ProductModel();
             $data = $SanPhamModel->getProductById($msp); //var_dump($data); exit();
             if(file_exists('./public/hinh_san_pham/'.$data['hinh'])) {
                 unlink('./public/hinh_san_pham/'.$data['hinh']);
@@ -216,7 +216,7 @@ class AdminController
         $DanhSachChuDe = $ChuDeModel->getSubject();
         //var_dump($DSChuDe); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
-        $SanPhamModel = new SanPhamModel();
+        $SanPhamModel = new ProductModel();
         $data = $SanPhamModel->getProductById($key); //var_dump($data); exit();
         $hinh_cu = $data['hinh'];
         //var_dump($data['hinh']); exit();

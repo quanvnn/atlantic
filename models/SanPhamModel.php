@@ -1,7 +1,7 @@
 <?php
 
 include_once "models/Database.php";
-class SanPhamModel extends Database
+class ProductModel extends Database
 {
     public function getProductById($id)
     {
