@@ -1,17 +1,17 @@
 <?php
-/* Smarty version 3.1.29, created on 2016-09-28 14:20:57
+/* Smarty version 3.1.29, created on 2016-09-29 20:19:03
   from "/home/lequan/IMAD/atlantic/views/templates/layouts/navTopAdmin.tpl" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.29',
-  'unifunc' => 'content_57eb6f59aa9d71_67908743',
+  'unifunc' => 'content_57ed14c7eca855_05011302',
   'file_dependency' => 
   array (
     '6cccefd777252927402b0c7fc799e739b6f3cfcd' => 
     array (
       0 => '/home/lequan/IMAD/atlantic/views/templates/layouts/navTopAdmin.tpl',
-      1 => 1474966765,
+      1 => 1475155140,
       2 => 'file',
     ),
   ),
@@ -19,7 +19,7 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
   array (
   ),
 ),false)) {
-function content_57eb6f59aa9d71_67908743 ($_smarty_tpl) {
+function content_57ed14c7eca855_05011302 ($_smarty_tpl) {
 ?>
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -36,7 +36,7 @@ function content_57eb6f59aa9d71_67908743 ($_smarty_tpl) {
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    Hello! <?php echo $_SESSION['nguoi_dung']['ten_nguoi_dung'];?>
+                    Hello! <?php echo $_SESSION['admin']['ten_nguoi_dung'];?>
  đẹp trai
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>

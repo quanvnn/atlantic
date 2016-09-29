@@ -15,22 +15,22 @@ class AdminController
     {
         $smarty = new SmartyController();
 
-        //nếu cookie.nguoi_dung đã tồn tại thì check tên đăng nhập và mật khẩu từ cookie với csdl
-        $cookie_name = "nguoi_dung";
-        $cookie_time = (3600 * 24 * 7); // 7 days
+        //nếu cookie.admin đã tồn tại thì check tên đăng nhập và mật khẩu từ cookie với csdl
+        $COOKIE_NAME = "admin";
+        $COOKIE_TIME = (3600 * 24 * 7); // 7 days
 
-        if (isset($_COOKIE[$cookie_name])) {
-            //var_dump($_COOKIE[$cookie_name]);
-            parse_str($_COOKIE[$cookie_name]);
+        if (isset($_COOKIE[$COOKIE_NAME])) {
+            //var_dump($_COOKIE[$COOKIE_NAME]);
+            parse_str($_COOKIE[$COOKIE_NAME]);
             //kiểm tra user và pass với CSDL
-            $admin = new AdminModel();
-            $nguoi_dung = $admin->getInfoAdmin($tendn, $mat_khau);
-            if ($nguoi_dung) {
-                //Tạo session.nguoi_dung
-                $arrTTNguoiDung=array(
-                    'ten_nguoi_dung' => $nguoi_dung['ho_ten'],
-                    'tendn'          => $nguoi_dung['ten_dang_nhap']);
-                $_SESSION['nguoi_dung'] = $arrTTNguoiDung;
+            $adminModel = new AdminModel();
+            $admin = $adminModel->getInfoAdmin($username, $password);
+            if ($admin) {
+                //Tạo session.admin
+                $infoAdmin = array(
+                    'ten_nguoi_dung' => $admin['ho_ten'],
+                    'tendn'          => $admin['ten_dang_nhap']);
+                $_SESSION['admin'] = $infoAdmin;
                 header('location:'.path.'/quan-tri.html'); exit();
             }
         }
@@ -38,24 +38,24 @@ class AdminController
         //khi submit form đăng nhập
         if (isset($_POST['btnDangNhapAdmin'])) {
             //validate bien post
-            $ten_dang_nhap = addslashes($_POST['ten_dang_nhap']);
-            $mat_khau = addslashes($_POST['mat_khau']);
+            $username = addslashes($_POST['ten_dang_nhap']);
+            $pass = addslashes($_POST['mat_khau']);
 
             //kiểm tra user và pass với CSDL
-            $admin = new AdminModel();
-            $nguoi_dung = $admin->getInfoAdmin($ten_dang_nhap, md5($mat_khau));
+            $adminModel = new AdminModel();
+            $admin = $adminModel->getInfoAdmin($username, md5($pass));
 
-            if ($nguoi_dung) {
-                //Tạo session.nguoi_dung
-                $arrTTNguoiDung = array(
-                    'ten_nguoi_dung' =>$nguoi_dung['ho_ten'],
-                    'tendn'          =>$nguoi_dung['ten_dang_nhap']
+            if ($admin) {
+                //Tạo session.admin
+                $infoAdmin = array(
+                    'ten_nguoi_dung' => $admin['ho_ten'],
+                    'tendn'          => $admin['ten_dang_nhap']
                     );
-                $_SESSION['nguoi_dung'] = $arrTTNguoiDung;
+                $_SESSION['admin'] = $infoAdmin;
                 if (isset($_POST['remember'])) {
-                    $cookie_value = "tendn=".$nguoi_dung['ten_dang_nhap']."&mat_khau=".$nguoi_dung['mat_khau'];
-                    setcookie($cookie_name, $cookie_value, time() + $cookie_time);
-                    //var_dump($_COOKIE['nguoi_dung']); exit();
+                    $COOKIE_VALUE = "username=".$admin['ten_dang_nhap']."&password=".$admin['mat_khau'];
+                    setcookie($COOKIE_NAME, $COOKIE_VALUE, time() + $COOKIE_TIME);
+                    //var_dump($_COOKIE['admin']); exit();
                 }
                 header('location:'.path.'/quan-tri.html'); exit();
             }
@@ -67,7 +67,7 @@ class AdminController
     public function manageSystem()
     {
         // kiểm tra tồn tại của session.nguoi_dung
-        if (! isset($_SESSION['nguoi_dung'])) {
+        if (! isset($_SESSION['admin'])) {
             // var_dump($_SESSION['nguoi_dung']);exit();
             // bắt buộc đăng nhập
             header('location:'.path.'/quan-tri/dang-nhap.html'); exit();
@@ -79,19 +79,19 @@ class AdminController
     }
     public function logoutAdmin() {
         session_destroy();
-        unset($_SESSION['nguoi_dung']);
-        if (isset($_COOKIE['nguoi_dung'])) {
-            setcookie("nguoi_dung", "", time() - 3600);
+        unset($_SESSION['admin']);
+        if (isset($_COOKIE['admin'])) {
+            setcookie("admin", "", time() - 3600);
         }
         header('location:'.path.'/quan-tri/dang-nhap.html'); exit();
     }
     public function manageProducts()
     {
-        $admin = new AdminModel();
-        $DSSanPham = $admin->getProductAdmin();
+        $adminModel = new AdminModel();
+        $products = $adminModel->getProductAdmin();
         $smarty = new SmartyController();
-        if ($DSSanPham) {
-            $smarty->assign('DSSanPham', $DSSanPham);
+        if ($products) {
+            $smarty->assign('DSSanPham', $products);
             $smarty->display('admin/product.tpl');    
         } else {
             header('location:'.path.'/quan-tri/san-pham.html'); exit();
@@ -100,13 +100,13 @@ class AdminController
     public function deleteProduct()
     {
         if (isset($_GET['key'])) {
-            $msp = $_GET['key'];
-            $SanPhamModel = new ProductModel();
-            $data = $SanPhamModel->getProductById($msp); //var_dump($data); exit();
-            if(file_exists('./public/hinh_san_pham/'.$data['hinh'])) {
-                unlink('./public/hinh_san_pham/'.$data['hinh']);
+            $idProduct = $_GET['key'];
+            $productModel = new ProductModel();
+            $product = $productModel->getProductById($idProduct); //var_dump($product); exit();
+            if(file_exists('./public/hinh_san_pham/'.$product['hinh'])) {
+                unlink('./public/hinh_san_pham/'.$product['hinh']);
                 $admin = new AdminModel();
-                $admin->deleteProduct($msp);
+                $admin->deleteProduct($idProduct);
             }
             header('location:'.path.'/quan-tri/san-pham.html');
         }
@@ -124,7 +124,7 @@ class AdminController
                 'hinh'                =>'',
                 'chu_de_id'           =>'',
                 );
-        $mangErr = array(
+        $arrayErr = array(
                 'ten_san_pham'=>'',
                 'ten_san_pham_url'=>'',
                 'mo_ta'=>'',
@@ -152,13 +152,12 @@ class AdminController
                 //var_dump($check->checkimage($data['hinh'])); exit();
                 if ($check->checkimage($data['hinh'])) {
                     // thực hiện upload hình vào csdl
-                    $hinh = $_FILES['hinh'];
+                    $img = $_FILES['hinh'];
                     //var_dump($hinh);
-                    $data['hinh'] = time().'-'.$hinh['name'];
+                    $data['hinh'] = time().'-'.$img['name'];
                     //var_dump($data['hinh']); exit();
-                    //var_dump(move_uploaded_file($hinh['tmp_name'],'./public/hinh_san_pham/'.$data['hinh'])); exit();
-
-                    if (move_uploaded_file($hinh['tmp_name'],'./public/hinh_san_pham/'.$data['hinh'])) {
+                    
+                    if (move_uploaded_file($img['tmp_name'],'./public/hinh_san_pham/'.$data['hinh'])) {
                         // insert sản phẩm vào csdl
                         $admin = new AdminModel();
                         $admin->addProduct($data);
@@ -173,7 +172,7 @@ class AdminController
                     
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
-                $mangErr = $check->getDataErr();
+                $arrayErr = $check->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -181,12 +180,12 @@ class AdminController
         //hiển thị mảng thông tin sản phẩm trả về trình duyệt khi đã nhập
         $smarty->assign('data', $data);
         //hiển thị mảng báo lỗi
-        $smarty->assign('mangErr', $mangErr);
+        $smarty->assign('mangErr', $arrayErr);
         //hiển thị list loại sản phẩm
-        $LoaiSanPhamModel = new CategoryModel();
-        $smarty->assign('DSLoaiSanPham', $LoaiSanPhamModel->getCat());
-        $ChuDeModel = new SubjectModel();
-        $smarty->assign('DanhSachChuDe', $ChuDeModel->getSubject());
+        $categoryModel = new CategoryModel();
+        $smarty->assign('DSLoaiSanPham', $categoryModel->getCat());
+        $subjectModel = new SubjectModel();
+        $smarty->assign('DanhSachChuDe', $subjectModel->getSubject());
         $smarty->assign('alert', $alert);
         $smarty->display('admin/add_product.tpl');
     }
@@ -202,31 +201,34 @@ class AdminController
         //Validate biến GET: nếu biến GET tồn tại và kiểu nguyên lớn hơn 0
         if (isset($_GET['key']) && filter_var($_GET['key'], FILTER_VALIDATE_INT, array("options" => array("min_range"=>1)))) {
             //mã sản phẩm
-            $key = $_GET['key']; //echo $key; exit();
+            $idProduct = $_GET['key']; //echo $idProduct; exit();
         } else {
             header('location:'.path.'/quan-tri/san-pham.html');
             exit();
         }
         //hiển thị list danh sách loại ra trình duyệt để lựa chọn update
-        $LoaiSanPhamModel = new CategoryModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); 
-        //var_dump($DSLoaiSanPham); exit();
+        $categoryModel = new CategoryModel();
+        $categories = $categoryModel->getCat(); 
+        //var_dump($categories); exit();
+
         //hiển thị list danh sách chủ đề ra trình duyệt để lựa chọn update
-        $ChuDeModel = new SubjectModel();
-        $DanhSachChuDe = $ChuDeModel->getSubject();
-        //var_dump($DSChuDe); exit();
+        $subjectModel = new SubjectModel();
+        $subjects = $subjectModel->getSubject();
+        //var_dump($subjects); exit();
+
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
-        $SanPhamModel = new ProductModel();
-        $data = $SanPhamModel->getProductById($key); //var_dump($data); exit();
-        $hinh_cu = $data['hinh'];
-        //var_dump($data['hinh']); exit();
-        if (! $data) {
+        $productModel = new ProductModel();
+        $products = $productModel->getProductById($idProduct); 
+        //var_dump($products); exit();
+        $oldImgage = $products['hinh'];
+        //var_dump($oldImage); exit();
+        if (! $products) {
             //có thể người dùng nhập biến GET bất kỳ
             //nếu GET mã sản phẩm không tồn tại trong csdl nên ko thể có sản phẩm để xuất ra
             header('location:'.path.'/quan-tri/san-pham.html');
             exit();
         }
-        $mangErr = array(
+        $arrayErr = array(
             'ten_san_pham'     =>'',
             'ten_san_pham_url' =>'',
             'mo_ta'            =>'',
@@ -237,8 +239,8 @@ class AdminController
 
         //Khi submit
         if (isset($_POST['btnCapNhatSanPham'])) {
-            $data = array(
-                'ma_san_pham'        =>$key,
+            $products = array(
+                'ma_san_pham'        =>$idProduct,
                 'ten_san_pham'       =>$_POST['ten_san_pham'], 
                 'ten_san_pham_url'   =>$_POST['ten_san_pham_url'], 
                 'ma_loai'            =>$_POST['ma_loai'], 
@@ -248,66 +250,66 @@ class AdminController
                 'hinh'               =>$_FILES['hinh'],
                 'chu_de_id'          =>$_POST['chu_de_id'],
                 );
-            //var_dump($data);exit();
+            //var_dump($products);exit();
             $check = new HelperController();
-            if ($check->checkData($data)) {
+            if ($check->checkData($products)) {
                 //nếu không có lỗi xảy ra đối với các trường bắt buộc
                 //tiến hành kiểm tra trường upload hình
-                $hinh = $_FILES['hinh']; 
-                //var_dump($hinh); exit();
-                if ($check->checkimage($hinh) == 0) {
+                $newImage = $_FILES['hinh']; 
+                //var_dump($newImage); exit();
+                if ($check->checkimage(! $newImage)) {
                     $alert = 'Vui lòng kiểm tra lại hình và đảm bảo rằng hình sản phẩm nhỏ hơn 2 Mb.';
                 } else {
                     // thực hiện upload hình vào csdl
-                    $nameHinh = time().'-'.$hinh['name'];
-                    if (move_uploaded_file($hinh['tmp_name'],'./public/hinh_san_pham/'.$nameHinh)){
+                    $imageName = time().'-'.$newImage['name'];
+                    if (move_uploaded_file($newImage['tmp_name'],'./public/hinh_san_pham/'.$imageName)){
                         //nếu upload thành công ta sẽ xóa hình cũ đi
-                        if (file_exists('./public/hinh_san_pham/'.$hinh_cu)) {
-                            unlink('./public/hinh_san_pham/'.$hinh_cu);
+                        if (file_exists('./public/hinh_san_pham/'.$oldImgage)) {
+                            unlink('./public/hinh_san_pham/'.$oldImgage);
                         }
                         //thực hiện sản phẩm update vào csdl
-                        $data['hinh'] = $nameHinh;
+                        $products['hinh'] = $imageName;
                         $admin = new AdminModel();
-                        $admin->updateProduct($data);
+                        $admin->updateProduct($products);
                         //Thông báo ra trình duyệt
                         $alert = 'Cập nhật sản phẩm thành công!';
                     }
                 }
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
-                $mangErr = $check->getDataErr();
+                $arrayErr = $check->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
         $smarty = new SmartyController();
-        $smarty->assign('data', $data);
-        $smarty->assign('mangErr', $mangErr);
-        $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
-        $smarty->assign('DanhSachChuDe', $DanhSachChuDe);
+        $smarty->assign('data', $products);
+        $smarty->assign('mangErr', $arrayErr);
+        $smarty->assign('DSLoaiSanPham', $categories);
+        $smarty->assign('DanhSachChuDe', $subjects);
         $smarty->assign('alert', $alert);
         $smarty->display('admin/update_product.tpl');
     }
     public function manageCategories()
     {
-        $CategoryModel = new CategoryModel();
-        $DSLoaiSanPham = $CategoryModel->getCat(); //var_dump($getCat); exit();
+        $categoryModel = new CategoryModel();
+        $categories = $categoryModel->getCat(); 
+        //var_dump($categories); exit();
         $smarty = new SmartyController();
-        if ($DSLoaiSanPham) {
-            $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
+        if ($categories) {
+            $smarty->assign('DSLoaiSanPham', $categories);
             $smarty->display('admin/categories.tpl');    
         } else {
             header('location:'.path.'/quan-tri/loai-san-pham.html'); exit();
-        }         
-        
+        }
     }
     public function deleteCategory()
     {
         //echo 'ok';
         if (isset($_GET['key'])) {
             //var_dump($_GET['key']); exit();
-            $maloai = $_GET['key'];
-            $admin = new AdminModel();
-            $admin->deleteCat($maloai);
+            $idCategory = $_GET['key'];
+            $adminModel = new AdminModel();
+            $adminModel->deleteCat($idCategory);
             header('location:'.path.'/quan-tri/loai-san-pham.html');
         }
     }
@@ -324,7 +326,7 @@ class AdminController
                 'ten_loai_san_pham_url'=>'',
                 'ma_loai_cha'=>''
                 );
-        $mangErr = array(
+        $arrayErr = array(
                 'ten_loai'=>'',
                 'ten_loai_san_pham_url'=>'',
                 );
@@ -332,20 +334,20 @@ class AdminController
         //Thêm loại cha
         if (isset($_POST['btnThemLoaiCha'])) {
             $data['loaicha'] = array(
-              //  'ten_loai'                 =>$_POST['ten_loai'],
-                'ten_loai_san_pham_url'    =>$_POST['ten_loai_san_pham_url'],
+                //'ten_loai'             => $_POST['ten_loai'],
+                'ten_loai_san_pham_url'    => $_POST['ten_loai_san_pham_url'],
                 );
-            var_dump($data); exit();
+            //var_dump($data); exit();
             $check = new HelperController();
             if ($check->checkDataCategory($data['loaicha'])) {
                 //Hàm trả về true false
                 // insert sản phẩm vào csdl
-                $admin = new AdminModel();
-                $admin->addCat($data['loaicha']);
+                $adminModel = new AdminModel();
+                $adminModel->addCat($data['loaicha']);
                 $alert['loaicha'] = 'Thêm thành công!';
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
-                $mangErr = $check->getDataErr();
+                $arrayErr = $check->getDataErr();
                 $alert['loaicha'] = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -360,12 +362,12 @@ class AdminController
             $check = new HelperController();
             if ($check->checkDataCategory($data['loaicon'])) {
                 // insert sản phẩm vào csdl
-                $admin = new AdminModel();
-                $admin->addSubCat($data['loaicon']);
+                $adminModel = new AdminModel();
+                $adminModel->addSubCat($data['loaicon']);
                 $alert['loaicon'] = 'Thêm thành công!';
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
-                $mangErr = $check->getDataErr();
+                $arrayErr = $check->getDataErr();
                 $alert['loaicon'] = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -374,36 +376,36 @@ class AdminController
         $smarty->assign('data1', $data['loaicha']);
         $smarty->assign('data2', $data['loaicon']);
         //hiển thị mảng báo lỗi
-        $smarty->assign('mangErr', $mangErr);
+        $smarty->assign('mangErr', $arrayErr);
         $smarty->assign('alert', $alert);
-        $LoaiSanPhamModel = new CategoryModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getCat();
-        //var_dump($DSLoaiSanPham); exit();
-        $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
+        $categoryModel = new CategoryModel();
+        $categories = $categoryModel->getCat();
+        //var_dump($categories); exit();
+        $smarty->assign('DSLoaiSanPham', $categories);
         $smarty->display('admin/add_category.tpl');
     }
     public function updateCategory()
     {
         if (isset($_GET['key']) && filter_var($_GET['key'], FILTER_VALIDATE_INT, array("options" => array("min_range"=>1)))) {
             //mã sản phẩm
-            $key = $_GET['key']; //echo $key; exit();
+            $idProduct = $_GET['key']; //echo $idProduct; exit();
         } else {
             header('location:'.path.'/quan-tri/loai-san-pham.html');
             exit();
         }
         //hiển thị list danh sách loại ra trình duyệt để lựa chọn update
-        $LoaiSanPhamModel = new CategoryModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getCat();
-        //var_dump($DSLoaiSanPham); exit();
-        //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
-        $data = $LoaiSanPhamModel->getCatByID($key); //var_dump($data); exit();
+        $categoryModel = new CategoryModel();
+        $categories = $categoryModel->getCat();
+        //var_dump($categories); exit();
+        //hiển thị thông tin loai sản phẩm muốn cập nhập ra trình duyệt
+        $data = $categoryModel->getCatByID($idProduct); //var_dump($data); exit();
         if (! $data) {
             //có thể người dùng nhập biến GET bất kỳ
             //nếu GET mã sản phẩm không tồn tại trong csdl nên ko thể có sản phẩm để xuất ra
             header('location:'.path.'/quan-tri/loai-san-pham.html');
             exit();
         }
-        $mangErr = array(
+        $arrayErr = array(
             'ten_loai'              =>'',
             'ten_loai_san_pham_url' =>'',
             );
@@ -412,7 +414,7 @@ class AdminController
         //Khi submit
         if (isset($_POST['btnCapNhatLoaiSanPham'])) {
             $data = array(
-                'ma_loai'                     => $key,
+                'ma_loai'                     => $idProduct,
                 'ten_loai'                    => $_POST['ten_loai'],
                 'ten_loai_san_pham_url'       => $_POST['ten_loai_san_pham_url']
                 );
@@ -420,20 +422,20 @@ class AdminController
             $check = new HelperController();
             if ($check->checkDataCategory($data)) {
                 //thực hiện sản phẩm update vào csdl
-                $admin = new AdminModel();
-                $admin->updateCat($data);
+                $adminModel = new AdminModel();
+                $adminModel->updateCat($data);
                 //Thông báo ra trình duyệt
                 $alert = 'Cập nhật thành công!';
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
-                $mangErr = $check->getDataErr();
+                $arrayErr = $check->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
         $smarty = new SmartyController();
         $smarty->assign('data', $data);
-        $smarty->assign('mangErr', $mangErr);
-        $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
+        $smarty->assign('mangErr', $arrayErr);
+        $smarty->assign('DSLoaiSanPham', $categories);
         $smarty->assign('alert', $alert);
         $smarty->display('admin/update_category.tpl');
     }
@@ -441,23 +443,24 @@ class AdminController
     {
         if (isset($_GET['key']) && filter_var($_GET['key'], FILTER_VALIDATE_INT, array("options" => array("min_range"=>1)))) {
             //mã sản phẩm
-            $key = $_GET['key']; //echo $key; exit();
+            $idProduct = $_GET['key']; //echo $key; exit();
         } else {
             header('location:'.path.'/quan-tri/loai-san-pham.html');
             exit();
         }
         //hiển thị list danh sách loại ra trình duyệt để lựa chọn update
-        $LoaiSanPhamModel = new CategoryModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); //var_dump($getCat); exit();
+        $categoryModel = new CategoryModel();
+        $categories = $categoryModel->getCat(); //var_dump($categories); exit();
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
-        $data = $LoaiSanPhamModel->getCatByID($key); //var_dump($data); exit();
+        $data = $categoryModel->getCatByID($idProduct); 
+        //var_dump($data); exit();
         if (! $data) {
             //có thể người dùng nhập biến GET bất kỳ
             //nếu GET mã sản phẩm không tồn tại trong csdl nên ko thể có sản phẩm để xuất ra
             header('location:'.path.'/quan-tri/loai-san-pham.html');
             exit();
         }
-        $mangErr = array(
+        $arrayErr = array(
             'ten_loai'              =>'',
             'ten_loai_san_pham_url' =>'',
             );
@@ -466,7 +469,7 @@ class AdminController
         //Khi submit
         if (isset($_POST['btnCapNhatLoaiSanPham'])) {
             $data = array(
-                'ma_loai'                     => $key,
+                'ma_loai'                     => $idProduct,
                 'ten_loai'                    => $_POST['ten_loai'],
                 'ten_loai_san_pham_url'       => $_POST['ten_loai_san_pham_url'],
                 'ma_loai_cha'                 => $_POST['ma_loai']
@@ -481,26 +484,26 @@ class AdminController
                 $alert = 'Cập nhật thành công!';
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
-                $mangErr = $check->getDataErr();
+                $arrayErr = $check->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
         $smarty = new SmartyController();
         $smarty->assign('data', $data);
-        $smarty->assign('mangErr', $mangErr);
-        $smarty->assign('DSLoaiSanPham', $DSLoaiSanPham);
+        $smarty->assign('mangErr', $arrayErr);
+        $smarty->assign('DSLoaiSanPham', $categories);
         $smarty->assign('alert', $alert);
         $smarty->display('admin/update_subcategory.tpl');
     }
     public function manageSubject()
     {
-        $SubjectModel = new SubjectModel();
-        $DSChuDe = $SubjectModel->getSubject();
-        //var_dump($DSChuDe); exit();
+        $subjectModel = new SubjectModel();
+        $subjects = $subjectModel->getSubject();
+        //var_dump($subjects); exit();
         
-        if ($DSChuDe) {
+        if ($subjects) {
             $smarty = new SmartyController();
-            $smarty->assign('DSChuDe', $DSChuDe);
+            $smarty->assign('DSChuDe', $subjects);
             $smarty->display('admin/subject.tpl');
         } else {
             header('location:'.path.'/quan-tri/them-chu-de-sach.html');
@@ -576,35 +579,37 @@ class AdminController
         //Validate biến GET: nếu biến GET tồn tại và kiểu nguyên lớn hơn 0
         if (isset($_GET['key'])) {
             //mã sản phẩm
-            $key = $_GET['key']; //echo $key; exit();
-            $mang = explode('-', $key); //var_dump($mang); exit;
-            $ma_chu_de = $mang[count($mang)-1];
+            $stringUrl = $_GET['key']; 
+            //echo $stringUrl; exit();
+            $array = explode('-', $stringUrl); 
+            //var_dump($array); exit;
+            $idSubject = $array[count($array)-1];
         } else {
             header('location:'.path.'/quan-tri/chu-de.html');
             exit();
         }
         //hiển thị thông tin sản phẩm muốn cập nhập ra trình duyệt
-        $SubjectModel = new SubjectModel();
-        $data = $SubjectModel->getSubjectID($ma_chu_de); //var_dump($data); exit();
-        $hinh_cu = $data['hinh'];
+        $subjectModel = new SubjectModel();
+        $data = $subjectModel->getSubjectID($idSubject); //var_dump($data); exit();
+        $oldImgage = $data['hinh'];
         //var_dump($data['hinh']); exit();
         if (! $data) {
             //có thể người dùng nhập biến GET bất kỳ
             //nếu GET mã sản phẩm không tồn tại trong csdl nên ko thể có sản phẩm để xuất ra
             header('location:'.path.'/quan-tri/chu-de.html'); exit();
         }
-        $mangErr = array(
+        $arrayErr = array(
             'ten_chu_de'     =>'',
             'ten_chu_de_url' =>'',
-            'mo_ta'            =>'',
-            'hinh'             =>''
+            'mo_ta'          =>'',
+            'hinh'           =>''
             );
         $alert = '';
 
         //Khi submit
         if (isset($_POST['btnCapNhatChuDe'])) {
             $data = array(
-                'ma_chu_de'          =>$ma_chu_de,
+                'ma_chu_de'          =>$idSubject,
                 'ten_chu_de'         =>$_POST['ten_chu_de'], 
                 'ten_chu_de_url'     =>$_POST['ten_chu_de_url'], 
                 'mo_ta'              =>$_POST['mo_ta'], 
@@ -615,20 +620,21 @@ class AdminController
             if ($check->checkDataSubject($data)) {
                 //nếu không có lỗi xảy ra đối với các trường bắt buộc
                 //tiến hành kiểm tra trường upload hình
-                $hinh = $_FILES['hinh']; //var_dump($hinh); exit();
-                if ($check->checkimage($hinh) == 0) {
+                $newImage = $_FILES['hinh']; //var_dump($hinh); exit();
+
+                if ($check->checkimage(! $newImage)) {
                     $alert = 'Vui lòng kiểm tra lại hình và đảm bảo rằng hình sản phẩm nhỏ hơn 2 Mb.';
                 } else {
                     // thực hiện upload hình vào csdl
-                    $nameHinh = time().'-'.$hinh['name'];
+                    $imageName = time().'-'.$newImage['name'];
                 
-                    if (move_uploaded_file($hinh['tmp_name'],'./public/images/'.$nameHinh)) {
+                    if (move_uploaded_file($newImage['tmp_name'],'./public/images/'.$imageName)) {
                         //nếu upload thành công ta sẽ xóa hình cũ đi
-                        if (file_exists('./public/images/'.$hinh_cu)) {
-                            unlink('./public/images/'.$hinh_cu);
+                        if (file_exists('./public/images/'.$oldImgage)) {
+                            unlink('./public/images/'.$oldImgage);
                         }
                         //thực hiện sản phẩm update vào csdl
-                        $data['hinh'] = $nameHinh;
+                        $data['hinh'] = $imageName;
                         $admin = new AdminModel();
                         $admin->updateSubject($data);
                         //Thông báo ra trình duyệt
@@ -637,24 +643,24 @@ class AdminController
                 }
             } else {
                 //thông báo lỗi các trường bắt buộc ko được để trống
-                $mangErr = $check->getDataErr();
+                $arrayErr = $check->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
         $smarty = new SmartyController();
         $smarty->assign('data', $data);
-        $smarty->assign('mangErr', $mangErr);
+        $smarty->assign('mangErr', $arrayErr);
         $smarty->assign('alert', $alert);
         $smarty->display('admin/update_subject.tpl');
     }
     public function manageInvoices()
     {
-    	$InvoiceModel = new InvoiceModel();
-    	$DSHoaDon = $InvoiceModel->getInvoices();
-    	//var_dump($DSHoaDon); exit();
+    	$invoiceModel = new InvoiceModel();
+    	$invoices = $invoiceModel->getInvoices();
+    	//var_dump($invoices); exit();
     	$smarty = new SmartyController();
-    	if ($DSHoaDon) {
-    		$smarty->assign('DSHoaDon', $DSHoaDon);
+    	if ($invoices) {
+    		$smarty->assign('DSHoaDon', $invoices);
     	}
     	$smarty->display('admin/invoices.tpl');
     }
@@ -663,12 +669,12 @@ class AdminController
     	$smarty = new SmartyController();
     	if (isset($_GET['key'])) {
             //chua validate bien GET
-    		$soHD = $_GET['key'];
-    		$InvoiceModel = new InvoiceModel();
-    		$ChiTietDonHang = $InvoiceModel->getInfoInvoice($soHD);
-    		//var_dump($ChiTietDonHang); exit();
-    		if ($ChiTietDonHang) {
-    			$smarty->assign('ChiTietDonHang',$ChiTietDonHang);
+    		$idInvoice = $_GET['key'];
+    		$invoiceModel = new InvoiceModel();
+    		$invoices = $invoiceModel->getInfoInvoice($idInvoice);
+    		//var_dump($invoices); exit();
+    		if ($invoicesDetail) {
+    			$smarty->assign('ChiTietDonHang',$invoices);
     		} else {
     			header('location:'.path.'/quan-tri/don-hang.html'); exit();
     		}
@@ -679,35 +685,35 @@ class AdminController
     }
     public function manageRequireClient()
     {
-        $ContactModel = new ContactModel();
-        $DSYeuCauKhachHang = $ContactModel->getRequireClient();
-        //var_dump($DSYeuCauKhachHang); exit();
+        $contactModel = new ContactModel();
+        $requestClient = $contactModel->getRequireClient();
+        //var_dump($requestClient); exit();
         $smarty = new SmartyController();
-        if ($DSYeuCauKhachHang) {
-            $smarty->assign('DSYeuCauKhachHang', $DSYeuCauKhachHang);
+        if ($requestClient) {
+            $smarty->assign('DSYeuCauKhachHang', $requestClient);
         }
         $smarty->display('admin/contact.tpl');
     }
     public function manageComment()
     {
-        $CommentModel = new CommentModel();
-        $DSBinhLuanAdmin = $CommentModel->getCommentAdmin();
-        //var_dump($DSBinhLuanAdmin); exit();
+        $commentModel = new CommentModel();
+        $comments = $commentModel->getCommentAdmin();
+        //var_dump($comments); exit();
         $smarty = new SmartyController();
-        if ($DSBinhLuanAdmin)
+        if ($comments)
         {
-            $smarty->assign('DSBinhLuanAdmin', $DSBinhLuanAdmin);
+            $smarty->assign('DSBinhLuanAdmin', $comments);
         }
         $smarty->display('admin/comment.tpl');
     }
     public function deleteComment()
     {
         if (isset($_GET['key'])) {
-            $id = $_GET['key'];
+            $idComment = $_GET['key'];
             //var_dump($id); exit();
             $smarty = new SmartyController();
-            $CommentModel = new CommentModel();
-            $CommentModel->deleteComment($id);
+            $commentModel = new CommentModel();
+            $commentModel->deleteComment($idComment);
             header('location:'.path.'/quan-tri/binh-luan.html');
             exit();
         } else {

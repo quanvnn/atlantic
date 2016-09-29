@@ -28,8 +28,8 @@ class SmartyController extends Smarty
             $email = addslashes($_POST['email']);
             $pass = addslashes($_POST['mat_khau']);
 
-            $ClientModel = new ClientModel();
-            $dataClient = $ClientModel->getLogin($email, $pass);
+            $clientModel = new ClientModel();
+            $dataClient = $clientModel->getLogin($email, $pass);
 
             //var_dump($dataClient); exit();
             if ($dataClient) {

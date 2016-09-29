@@ -12,7 +12,7 @@
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    Hello! {$smarty.session.nguoi_dung['ten_nguoi_dung']} đẹp trai
+                    Hello! {$smarty.session.admin['ten_nguoi_dung']} đẹp trai
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
