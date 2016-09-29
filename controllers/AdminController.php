@@ -337,7 +337,7 @@ class AdminController
                 );
             var_dump($data); exit();
             $check = new HelperController();
-            if ($check->checkDataLoaiSanPham($data['loaicha'])) {
+            if ($check->checkDataCategory($data['loaicha'])) {
                 //Hàm trả về true false
                 // insert sản phẩm vào csdl
                 $admin = new AdminModel();
@@ -358,7 +358,7 @@ class AdminController
                 );
             //var_dump($data); exit();
             $check = new HelperController();
-            if ($check->checkDataLoaiSanPham($data['loaicon'])) {
+            if ($check->checkDataCategory($data['loaicon'])) {
                 // insert sản phẩm vào csdl
                 $admin = new AdminModel();
                 $admin->addSubCat($data['loaicon']);
@@ -418,7 +418,7 @@ class AdminController
                 );
             //var_dump($data);exit();
             $check = new HelperController();
-            if ($check->checkDataLoaiSanPham($data)) {
+            if ($check->checkDataCategory($data)) {
                 //thực hiện sản phẩm update vào csdl
                 $admin = new AdminModel();
                 $admin->updateCat($data);
@@ -473,7 +473,7 @@ class AdminController
                 );
             //var_dump($data);exit();
             $check = new HelperController();
-            if ($check->checkDataLoaiSanPham($data)) {
+            if ($check->checkDataCategory($data)) {
                 //thực hiện sản phẩm update vào csdl
                 $admin = new AdminModel();
                 $admin->updateSubCat($data);
@@ -533,7 +533,7 @@ class AdminController
         //         );
         //     //var_dump($data); exit();
         //     $check = new HelperController();
-        //     if($check->checkDataChuDe($data))//Hàm trả về true false
+        //     if($check->checkDataSubject($data))//Hàm trả về true false
         //     {
         //         // Đảm bảo các trường bắt buộc ko để trống thì tiến hành Upload file
         //         if($check->checkimage($data['hinh']))
@@ -612,7 +612,7 @@ class AdminController
                 );
             //var_dump($data);exit();
             $check = new HelperController();
-            if ($check->checkDataChuDe($data)) {
+            if ($check->checkDataSubject($data)) {
                 //nếu không có lỗi xảy ra đối với các trường bắt buộc
                 //tiến hành kiểm tra trường upload hình
                 $hinh = $_FILES['hinh']; //var_dump($hinh); exit();

@@ -5,7 +5,6 @@ chdir(dirname(__DIR__));
 define('path', 'http://atlantic.dev');
 require_once "smarty/libs/Smarty.class.php";
 require_once "models/CategoryModel.php";
-//require_once('models/LoaiSanPhamModel.php');
 include_once "library/Gio_hang.php";
 
 class SmartyController extends Smarty
@@ -19,28 +18,28 @@ class SmartyController extends Smarty
         $this->setConfigDir('views/configs');
         $this->assign('path', path);
 
-        $LoaiSanPhamModel = new CategoryModel();
-        $DSLoaiSanPham = $LoaiSanPhamModel->getCat(); 
-        //var_dump($DSLoaiSanPham); exit();
-        $this->assign('DSLoaiSanPham', $DSLoaiSanPham);
+        $CategoryModel = new CategoryModel();
+        $categories = $CategoryModel->getCat(); 
+        //var_dump($categories); exit();
+        $this->assign('DSLoaiSanPham', $categories);
 
         //check submit form đăng nhập header
         if (isset($_POST['btnDangNhap'])) {
             $email = addslashes($_POST['email']);
-            $mat_khau = addslashes($_POST['mat_khau']);
+            $pass = addslashes($_POST['mat_khau']);
 
-            $KhachHangModel = new ClientModel();
-            $dataKhachHang = $KhachHangModel->getLogin($email, $mat_khau);
+            $ClientModel = new ClientModel();
+            $dataClient = $ClientModel->getLogin($email, $pass);
 
-            //var_dump($dataKhachHang); exit();
-            if ($dataKhachHang) {
+            //var_dump($dataClient); exit();
+            if ($dataClient) {
                 // tạo session.khachhang
-                $arrTTKhachHang = array(
-                                'ma_khach_hang'  => $dataKhachHang['ma_khach_hang'],
-                                'ten_khach_hang' => $dataKhachHang['ten_khach_hang'],
+                $infoClient = array(
+                                'ma_khach_hang'  => $dataClient['ma_khach_hang'],
+                                'ten_khach_hang' => $dataClient['ten_khach_hang'],
                                 'email'          => $email
                                 );
-                $_SESSION['khachhang'] = $arrTTKhachHang;
+                $_SESSION['khachhang'] = $infoClient;
                 //var_dump($_SESSION['khachhang']); exit();
             }
         }
