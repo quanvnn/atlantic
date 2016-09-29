@@ -680,7 +680,7 @@ class AdminController
     public function QuanTriYeuCauKhachHang()
     {
         $LienHeModel = new LienHeModel();
-        $DSYeuCauKhachHang = $LienHeModel->DSYeuCauKhachHang();
+        $DSYeuCauKhachHang = $LienHeModel->getRequireClient();
         //var_dump($DSYeuCauKhachHang); exit();
         $smarty = new SmartyController();
         if ($DSYeuCauKhachHang) {

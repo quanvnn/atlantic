@@ -2,7 +2,7 @@
 include_once('models/Database.php');
 class LienHeModel extends Database
 {
-    public function DSYeuCauKhachHang()
+    public function getRequireClient()
     {
         $chuoiSQL = 'SELECT * FROM `lien_he`';
         $this->setQuery($chuoiSQL);
