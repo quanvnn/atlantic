@@ -102,7 +102,7 @@ class AdminController
         if (isset($_GET['key'])) {
             $msp = $_GET['key'];
             $SanPhamModel = new SanPhamModel();
-            $data = $SanPhamModel->SanPhamId($msp); //var_dump($data); exit();
+            $data = $SanPhamModel->getProductById($msp); //var_dump($data); exit();
             if(file_exists('./public/hinh_san_pham/'.$data['hinh'])) {
                 unlink('./public/hinh_san_pham/'.$data['hinh']);
                 $admin = new AdminModel();

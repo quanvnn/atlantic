@@ -49,11 +49,11 @@ class FrontController
                     $pager = new Pager();
                     $limit = 8;
                     $start = $pager->findStart($limit); //echo $start; exit();
-                    $tongsanpham = $SanPhamModel->TongSanPhamTheoLoaiCon($chuoiMaLoai);  //var_dump($tongsanpham); exit();
+                    $tongsanpham = $SanPhamModel->countProductsInSubCat($chuoiMaLoai);  //var_dump($tongsanpham); exit();
                     $pages = $pager->findPages($tongsanpham[0], $limit);
                     $PageLink = $pager->pageLink($_GET['page'], $pages,$chuoi);  //echo ($PageLink); exit();
                     // End phân trang
-                    $DSSanPham = $SanPhamModel->SanPhamTheoLoaiConPhanTrang($chuoiMaLoai, $start, $limit);
+                    $DSSanPham = $SanPhamModel->getProductsInSubCat($chuoiMaLoai, $start, $limit);
                     if ($DSSanPham) {
                         $smarty->assign('DSSanPham', $DSSanPham);
                         $smarty->assign('PageLink', $PageLink);
@@ -83,12 +83,12 @@ class FrontController
                 $pager = new Pager();
                 $limit = 12;
                 $start = $pager->findStart($limit); //echo $start; exit();
-                $tongsanpham = $SanPhamModel->TongSanPhamTheoLoai($LoaiCon['ma_loai']);
+                $tongsanpham = $SanPhamModel->countProductsInCat($LoaiCon['ma_loai']);
                 $pages = $pager->findPages($tongsanpham[0], $limit);
                 $url = $LoaiCha['ten_loai_san_pham_url'].'/'.$chuoi;
                 $PageLink = $pager->pageLink($_GET['page'], $pages, $url);
                 // ./phan trang
-                $DSSanPham = $SanPhamModel->SanPhamTheoLoaiPhanTrang($LoaiCon['ma_loai'], $start, $limit);
+                $DSSanPham = $SanPhamModel->getProductInCat($LoaiCon['ma_loai'], $start, $limit);
                 $smarty = new SmartyController();
                 if ($DSSanPham) {
                     $smarty->assign('DSSanPham', $DSSanPham);
@@ -122,12 +122,12 @@ class FrontController
                 $pager = new Pager();
                 $limit = 8;
                 $start = $pager->findStart($limit); //echo $start; exit();
-                $tongsanpham = $SanPhamModel->TongSanPhamTheoChuDe($ma_chu_de);
+                $tongsanpham = $SanPhamModel->countProductsInSubject($ma_chu_de);
                 //var_dump($tongsanpham); exit();
                 $pages = $pager->findPages($tongsanpham[0], $limit);
                 $PageLink = $pager->pageLink($_GET['page'], $pages, $chuoi);
                 
-                $DSSanPham = $SanPhamModel->DSSanPhamTheoChuDePhanTrang($ma_chu_de);
+                $DSSanPham = $SanPhamModel->getProductInSubject($ma_chu_de);
                 //var_dump($DSSanPham); exit();
 
                 $smarty = new SmartyController();
@@ -153,14 +153,14 @@ class FrontController
             $mang = explode('-', $chuoi);
             $id = $mang[count($mang) - 1];// $id: mã sản phẩm
             $SanPhamModel = new SanPhamModel();
-            $san_pham = $SanPhamModel->SanPhamId($id); //var_dump($san_pham); exit();
+            $san_pham = $SanPhamModel->getProductById($id); //var_dump($san_pham); exit();
             
             //Hiển thị thông tin sách ra trình duyệt
             $smarty = new SmartyController();
             if ($san_pham) {
                 $smarty->assign('san_pham', $san_pham);
                 //Sản phẩm cùng loại
-                $DSSanPhamCungLoai = $SanPhamModel->DSSanPhamCungLoai($id, $san_pham['ma_loai']); 
+                $DSSanPhamCungLoai = $SanPhamModel->getProductsFromTheSameCat($id, $san_pham['ma_loai']); 
                 //var_dump($DSSanPhamCungLoai);exit();
                 if ($DSSanPhamCungLoai) {
                     $smarty->assign('DSSanPhamCungLoai', $DSSanPhamCungLoai);
