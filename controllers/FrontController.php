@@ -76,7 +76,7 @@ class FrontController
             $LoaiCon = $LoaiSanPhamModel->getCatUrl($chuoi);
             //var_dump($LoaiCon); exit();
             if ($LoaiCon) {
-                $LoaiCha = $LoaiSanPhamModel->getCatID($LoaiCon['ma_loai_cha']);//dùng cho breadcrumb
+                $LoaiCha = $LoaiSanPhamModel->getCatByID($LoaiCon['ma_loai_cha']);//dùng cho breadcrumb
                 
                 $SanPhamModel = new ProductModel();
                 // phân trang

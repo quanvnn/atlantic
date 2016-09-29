@@ -20,7 +20,7 @@ class CategoryModel extends Database
         $this->setQuery('SELECT * FROM loai_san_pham WHERE ma_loai_cha=?');
         return $this->loadAllRow(array($maloaicha));
     }
-    public function getCatID($ma_loai)
+    public function getCatByID($ma_loai)
     {
         $this->setQuery('SELECT * FROM loai_san_pham WHERE ma_loai=?');
         return $this->loadRow(array($ma_loai));
