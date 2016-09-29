@@ -1,12 +1,12 @@
 <?php
 include_once('controllers/SmartyController.php');
 include_once('controllers/HelperController.php');
-include_once('models/LoaiSanPhamModel.php');
-include_once('models/BinhLuanModel.php');
+include_once('models/CategoryModel.php');
+include_once('models/CommentModel.php');
 include_once('models/SanPhamModel.php');
 include_once('models/DonHangModel.php');
-include_once('models/LienHeModel.php');
-include_once('models/ChuDeModel.php');
+include_once('models/ContactModel.php');
+include_once('models/SubjectModel.php');
 include_once('models/AdminModel.php');
 
 class AdminController

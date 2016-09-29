@@ -4,7 +4,7 @@ session_start();
 chdir(dirname(__DIR__));
 define('path', 'http://atlantic.dev');
 require_once "smarty/libs/Smarty.class.php";
-require_once "models/LoaiSanPhamModel.php";
+require_once "models/CategoryModel.php";
 //require_once('models/LoaiSanPhamModel.php');
 include_once "library/Gio_hang.php";
 

@@ -1,10 +1,10 @@
 <?php
 include_once('controllers/SmartyController.php');
-include_once('models/LoaiSanPhamModel.php');
-include_once('models/KhachHangModel.php');
-include_once('models/BinhLuanModel.php');
-include_once('models/SanPhamModel.php');
-include_once('models/ChuDeModel.php');
+include_once('models/CategoryModel.php');
+include_once('models/ClientModel.php');
+include_once('models/CommentModel.php');
+include_once('models/ProductModel.php');
+include_once('models/SubjectModel.php');
 include_once('library/Gio_hang.php');
 include_once('library/Pager.php');
 
