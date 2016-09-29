@@ -26,7 +26,7 @@ class CategoryModel extends Database
         return $this->loadRow(array($ma_loai));
     }
     // Truy xuất loại sản phẩm dựa vào tên loại url
-    public function getCatUrl($chuoi)
+    public function getCatByUrl($chuoi)
     {
         $this->setQuery("SELECT * FROM loai_san_pham WHERE ten_loai_san_pham_url=?");
         return $this->loadRow(array($chuoi));

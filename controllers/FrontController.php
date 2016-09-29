@@ -28,7 +28,7 @@ class FrontController
             
             $chuoi = $_GET['key']; //echo $chuoi; exit();
             $LoaiSanPhamModel = new CategoryModel();
-            $LoaiCha = $LoaiSanPhamModel->getCatUrl($chuoi); //var_dump($LoaiCha); exit();
+            $LoaiCha = $LoaiSanPhamModel->getCatByUrl($chuoi); //var_dump($LoaiCha); exit();
 
             if ($LoaiCha) {
                 $smarty = new SmartyController();
@@ -73,7 +73,7 @@ class FrontController
         {
             $chuoi = $_GET['key'];
             $LoaiSanPhamModel = new CategoryModel();
-            $LoaiCon = $LoaiSanPhamModel->getCatUrl($chuoi);
+            $LoaiCon = $LoaiSanPhamModel->getCatByUrl($chuoi);
             //var_dump($LoaiCon); exit();
             if ($LoaiCon) {
                 $LoaiCha = $LoaiSanPhamModel->getCatByID($LoaiCon['ma_loai_cha']);//dùng cho breadcrumb
