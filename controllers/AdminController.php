@@ -691,7 +691,7 @@ class AdminController
     public function QuanTriBinhLuan()
     {
         $BinhLuanModel = new BinhLuanModel();
-        $DSBinhLuanAdmin = $BinhLuanModel->DSBinhLuanAdmin();
+        $DSBinhLuanAdmin = $BinhLuanModel->getCommentAdmin();
         //var_dump($DSBinhLuanAdmin); exit();
         $smarty = new SmartyController();
         if ($DSBinhLuanAdmin)
@@ -707,7 +707,7 @@ class AdminController
             //var_dump($id); exit();
             $smarty = new SmartyController();
             $BinhLuanModel = new BinhLuanModel();
-            $BinhLuanModel->XoaBinhLuan($id);
+            $BinhLuanModel->deleteComment($id);
             header('location:'.path.'/quan-tri/binh-luan.html');
             exit();
         } else {
