@@ -12,10 +12,10 @@ class FrontController
 {
 	public function index()
 	{
-        $ChuDeModel = new SubjectModel();
-        $DSChuDe = $ChuDeModel->getSubject(); //var_dump($DSChuDe); exit();
+        $subjectModel = new SubjectModel();
+        $subjects = $subjectModel->getSubject(); //var_dump($subjects); exit();
 		$smarty = new SmartyController;
-        $smarty->assign('DSChuDe', $DSChuDe);
+        $smarty->assign('DSChuDe', $subjects);
 		$smarty->display('home.tpl');
 	}
 	public function getProductsInCat()
@@ -26,43 +26,49 @@ class FrontController
         //-> tách mảng thành chuỗi mã loại để truy xuất danh sách sản phẩm dựa vào chuỗi mã loại đó
         if (isset($_GET['key'])) {
             
-            $chuoi = $_GET['key']; //echo $chuoi; exit();
-            $LoaiSanPhamModel = new CategoryModel();
-            $LoaiCha = $LoaiSanPhamModel->getCatByUrl($chuoi); //var_dump($LoaiCha); exit();
+            $stringUrl = $_GET['key']; 
+            //echo $chuoi; exit();
+            $categoryModel = new CategoryModel();
+            $categories = $categoryModel->getCatByUrl($stringUrl); 
+            //var_dump($categories); exit();
 
-            if ($LoaiCha) {
+            if ($categories) {
                 $smarty = new SmartyController();
-                $DSLoaiCon = $LoaiSanPhamModel->getSubCat($LoaiCha['ma_loai']);
-                //var_dump($DSLoaiCon); exit();
+                $subCategories = $categoryModel->getSubCat($categories['ma_loai']);
+                //var_dump($subCategories); exit();
 
-                if ($DSLoaiCon) {
+                if ($subCategories) {
                     // Tạo một mảng chứa các mã loại con
-                    $mangMaLoai = array();
-                    foreach ($DSLoaiCon as $loaicon) 
-                    {
-                        $mangMaLoai[] = $loaicon['ma_loai'];
+                    $arrayIdCategories = array();
+
+                    foreach ($subCategories as $subCategory) {
+                        $arrayIdCategories[] = $subCategory['ma_loai'];
                     }
+
                     // Tách mảng mã loại con thành 1 chuỗi
-                    $chuoiMaLoai = implode(',', $mangMaLoai); //echo $chuoiMaLoai; exit();
-                    $SanPhamModel = new ProductModel();
+                    $stringIdCategory = implode(',', $arrayIdCategories); 
+                    //echo $stringIdCategory; exit();
+                    $productModel = new ProductModel();
                     // phân trang
                     $pager = new Pager();
                     $limit = 8;
                     $start = $pager->findStart($limit); //echo $start; exit();
-                    $tongsanpham = $SanPhamModel->countProductsInSubCat($chuoiMaLoai);  //var_dump($tongsanpham); exit();
-                    $pages = $pager->findPages($tongsanpham[0], $limit);
-                    $PageLink = $pager->pageLink($_GET['page'], $pages,$chuoi);  //echo ($PageLink); exit();
+                    $countProduct = $productModel->countProductsInSubCat($stringIdCategory);  
+                    //var_dump($countProduct); exit();
+                    $pages = $pager->findPages($countProduct[0], $limit);
+                    $pageLink = $pager->pageLink($_GET['page'], $pages, $stringUrl);  
+                    //echo ($pageLink); exit();
                     // End phân trang
-                    $DSSanPham = $SanPhamModel->getProductsInSubCat($chuoiMaLoai, $start, $limit);
-                    if ($DSSanPham) {
-                        $smarty->assign('DSSanPham', $DSSanPham);
-                        $smarty->assign('PageLink', $PageLink);
+                    $products = $productModel->getProductsInSubCat($stringIdCategory, $start, $limit);
+                    if ($products) {
+                        $smarty->assign('DSSanPham', $products);
+                        $smarty->assign('PageLink', $pageLink);
                     } else {
                     	header("location:".path); exit();
                     }
                 }
 
-                $smarty->assign('LoaiCha', $LoaiCha);
+                $smarty->assign('LoaiCha', $categories);
                 $smarty->display('front/product_in_category.tpl');
             }  
         }
@@ -71,34 +77,41 @@ class FrontController
     {
         if (isset($_GET['key'])) 
         {
-            $chuoi = $_GET['key'];
-            $LoaiSanPhamModel = new CategoryModel();
-            $LoaiCon = $LoaiSanPhamModel->getCatByUrl($chuoi);
-            //var_dump($LoaiCon); exit();
-            if ($LoaiCon) {
-                $LoaiCha = $LoaiSanPhamModel->getCatByID($LoaiCon['ma_loai_cha']);//dùng cho breadcrumb
-                
-                $SanPhamModel = new ProductModel();
+            $stringUrl = $_GET['key'];
+            //echo $stringUrl; exit();
+            $categoryModel = new CategoryModel();
+            $subCategories = $categoryModel->getCatByUrl($stringUrl);
+            //var_dump($subCategories); exit();
+            if ($subCategories) {
+                //dùng cho breadcrumb
+                $categories = $categoryModel->getCatByID($subCategories['ma_loai_cha']);
+                //var_dump($categories); exit();
+
                 // phân trang
                 $pager = new Pager();
                 $limit = 12;
-                $start = $pager->findStart($limit); //echo $start; exit();
-                $tongsanpham = $SanPhamModel->countProductsInCat($LoaiCon['ma_loai']);
-                $pages = $pager->findPages($tongsanpham[0], $limit);
-                $url = $LoaiCha['ten_loai_san_pham_url'].'/'.$chuoi;
-                $PageLink = $pager->pageLink($_GET['page'], $pages, $url);
+                $start = $pager->findStart($limit); 
+                //echo $start; exit();
+
+                $productModel = new ProductModel();
+                $countProduct = $productModel->countProductsInSubCat($subCategories['ma_loai']);
+                //var_dump($countProduct); exit();
+                $pages = $pager->findPages($countProduct[0], $limit);
+                $url = $categories['ten_loai_san_pham_url'].'/'.$stringUrl;
+                $pageLink = $pager->pageLink($_GET['page'], $pages, $url);
                 // ./phan trang
-                $DSSanPham = $SanPhamModel->getProductInCat($LoaiCon['ma_loai'], $start, $limit);
+                $products = $productModel->getProductsInSubCat($subCategories['ma_loai'], $start, $limit);
+                //var_dump($products); exit();
                 $smarty = new SmartyController();
-                if ($DSSanPham) {
-                    $smarty->assign('DSSanPham', $DSSanPham);
-                    $smarty->assign('PageLink', $PageLink);
+                if ($products) {
+                    $smarty->assign('DSSanPham', $products);
+                    $smarty->assign('PageLink', $pageLink);
                 } else {
-                    header('location:'.path.'/'.$LoaiCha['ten_loai_san_pham_url'].'.html'); exit();
+                    header('location:'.path.'/'.$categories['ten_loai_san_pham_url'].'.html'); exit();
                 }
 
-                $smarty->assign('LoaiCon', $LoaiCon);
-                $smarty->assign('LoaiCha', $LoaiCha);
+                $smarty->assign('LoaiCon', $subCategories);
+                $smarty->assign('LoaiCha', $categories);
                 $smarty->display('front/product_in_category.tpl');
             } else {
                 header('loaction:'.path); exit();
@@ -107,6 +120,12 @@ class FrontController
             header('loaction:'.path); exit();
         }
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // 29/9
     public function getProductInSubject()
     {
         if (isset($_GET['key'])) {
