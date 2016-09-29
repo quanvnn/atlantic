@@ -588,7 +588,7 @@ class AdminController
         $data = $ChuDeModel->getSubjectID($ma_chu_de); //var_dump($data); exit();
         $hinh_cu = $data['hinh'];
         //var_dump($data['hinh']); exit();
-        if (!$data) {
+        if (! $data) {
             //có thể người dùng nhập biến GET bất kỳ
             //nếu GET mã sản phẩm không tồn tại trong csdl nên ko thể có sản phẩm để xuất ra
             header('location:'.path.'/quan-tri/chu-de.html'); exit();
@@ -650,7 +650,7 @@ class AdminController
     public function QuanTriDonHang()
     {
     	$DonHangModel = new DonHangModel();
-    	$DSHoaDon = $DonHangModel->DSHoaDon();
+    	$DSHoaDon = $DonHangModel->getInvoices();
     	//var_dump($DSHoaDon); exit();
     	$smarty = new SmartyController();
     	if ($DSHoaDon) {
@@ -665,7 +665,7 @@ class AdminController
             //chua validate bien GET
     		$soHD = $_GET['key'];
     		$DonHangModel = new DonHangModel();
-    		$ChiTietDonHang = $DonHangModel->ChiTietDonHang($soHD);
+    		$ChiTietDonHang = $DonHangModel->getInfoInvoice($soHD);
     		//var_dump($ChiTietDonHang); exit();
     		if ($ChiTietDonHang) {
     			$smarty->assign('ChiTietDonHang',$ChiTietDonHang);

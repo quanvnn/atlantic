@@ -2,7 +2,7 @@
 include_once('models/Database.php');
 class DonHangModel extends Database
 {
-    public function DSHoaDon()
+    public function getInvoices()
     {
         $chuoiSQL = "SELECT `hoa_don`.`so_hoa_don`, `hoa_don`.`ngay_hd`, `hoa_don`.`tri_gia`, `khach_hang`.`ten_khach_hang` 
             FROM `hoa_don`
@@ -10,7 +10,7 @@ class DonHangModel extends Database
         $this->setQuery($chuoiSQL);
         return $this->loadAllRow();
     }
-    public function ChiTietDonHang($SoHD)
+    public function getInfoInvoice($SoHD)
     {
         $chuoiSQL = "SELECT 
         	`khach_hang`.`ten_khach_hang`, `khach_hang`.`email`, 
