@@ -254,43 +254,38 @@ class FrontController
             header('loaction:'.path); exit();
         }
     }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////
-    // 29/9
-
     
     public function getInfoCart() 
     {
-        $gio_hang = new Gio_hang();
+        $shoppingCart = new Gio_hang();
+
         if (isset($_POST['btnCapNhat'])) {
-            $ttgh=$gio_hang->ThongTinGioHang();
+            $carts = $shoppingCart->ThongTinGioHang();
 
-            if ($ttgh) {
+            if ($carts) {
 
-                foreach($ttgh as $msp => $tt) {
-                    $slMoi = $_POST['sl_'.$msp];
-                    if ($slMoi != $tt[1]) {
-                        $gio_hang->CapNhatGioHang($msp, $slMoi);
+                foreach($carts as $idProduct => $cart) {
+                    $newNumber = $_POST['sl_'.$idProduct];
+                    if ($newNumber != $tt[1]) {
+                        $carts->CapNhatGioHang($idProduct, $newNumber);
                     }
                 }
             }
         }
-        $ttgh = $gio_hang->ThongTinGioHang();
-        //var_dump($ttgh);exit();
+        $carts = $shoppingCart->ThongTinGioHang();
+        //var_dump($carts);exit();
         $smarty = new SmartyController();
-        if ($ttgh) {
-            $gio_hang->TongSoTien();
-            $smarty->assign('ttgh', $ttgh);
+        if ($carts) {
+            $shoppingCart->TongSoTien();
+            $smarty->assign('ttgh', $carts);
         }
         $smarty->display('front/shopping_cart.tpl');
     }
+
     public function deleteCart() 
     {
-        $gio_hang = new Gio_hang();
-        $gio_hang->HuyGioHang();
+        $shoppingCart = new Gio_hang();
+        $shoppingCart->HuyGioHang();
         header('location:'.path.'/khach-hang/gio-hang');
     }
     public function createAccount()
@@ -300,20 +295,20 @@ class FrontController
         if (isset($_POST['btnDangKy'])) {
             $dataErr = $data = array();
 
-            $ten_khach_hang = $_POST['ten_khach_hang'];
-            $email = $_POST['email'];
-            $mat_khau = $_POST['mat_khau'];
+            $nameClient = $_POST['ten_khach_hang'];
+            $email      = $_POST['email'];
+            $password   = $_POST['mat_khau'];
 
-            if ($ten_khach_hang == '' || $email == '' || $mat_khau == '') {
+            if ($nameClient == '' || $email == '' || $password == '') {
                 //đảm bảo các trường không được để trống
                 $dataErr = "<span style='color:red'>Vui lòng điền đầy đủ thông tin.</span>";
                 $smarty->assign('message_dangky', $dataErr);
             } else {
                 //validate input
-                if (! preg_match("/^[a-zA-Z ]+$/", $ten_khach_hang)) {
+                if (! preg_match("/^[a-zA-Z ]+$/", $nameClient)) {
                     $dataErr['ten_khach_hang'] = "Tên chỉ được chứa kí tự alphabets và khoảng trắng.";
                 } else {
-                    $data['ten_khach_hang'] = $ten_khach_hang;
+                    $data['ten_khach_hang'] = $nameClient;
                 }
 
                 if (! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $_POST['email'])) {
@@ -322,10 +317,10 @@ class FrontController
                     $data['email'] = $email;
                 }
 
-                if (strlen($mat_khau) < 6) {
+                if (strlen($password) < 6) {
                     $dataErr['mat_khau'] = "Mật khẩu ít nhất 6 kí tự.";
                 } else {
-                    $data['mat_khau'] = $mat_khau;
+                    $data['mat_khau'] = $password;
                 }
 
                 if (! empty($_POST['hide'])){
@@ -338,8 +333,8 @@ class FrontController
             if (! $dataErr)
             {
                 //insert dữ liệu khách hàng vào csdl
-                $KhachHangModel = new ClientModel();
-                $data['ma_khach_hang'] = $KhachHangModel->getClient($data);
+                $clientModel = new ClientModel();
+                $data['ma_khach_hang'] = $clientModel->getClient($data);
                 $_SESSION['khachhang'] = $data;
                 //var_dump($_SESSION['khachhang']); exit();
                 $smarty->assign('message_dangky', "<span style='color:green'>Đăng ký thành công.</span>");
@@ -353,20 +348,20 @@ class FrontController
         if (isset($_POST['btnDangNhap'])) {
             //Validate input
             $email = addslashes($_POST['email']);
-            $mat_khau = addslashes($_POST['mat_khau']);
+            $password = addslashes($_POST['mat_khau']);
 
-            $KhachHangModel = new ClientModel();
-            $data = $KhachHangModel->getLogin($email, $mat_khau);
+            $clientModel = new ClientModel();
+            $data = $clientModel->getLogin($email, $password);
 
             //var_dump($data); exit();
             if ($data) {
                 // tạo session.khachhang
-                $arrTTKhachHang = array(
+                $infoClient = array(
                                 'ma_khach_hang'   => $data['ma_khach_hang'],
                                 'ten_khach_hang'  => $data['ten_khach_hang'],
                                 'email'           => $email
                                  );
-                $_SESSION['khachhang'] = $arrTTKhachHang;
+                $_SESSION['khachhang'] = $infoClient;
                 //var_dump($_SESSION['khachhang']); exit();
                 $smarty->assign('message_dangnhap', "<span style='color:green'>Đăng nhập thành công.</span>");
             } else {
@@ -394,32 +389,32 @@ class FrontController
         {
             //var_dump($_SESSION['khachhang']); exit();
             if (isset($_POST['btnDatHang'])) {
-                $dataKhachHang = $_SESSION['khachhang'];
-                $dataHoaDon = array(
-                                'ma_khach_hang'  => $dataKhachHang['ma_khach_hang'],
+                $clients = $_SESSION['khachhang'];
+                $invoices = array(
+                                'ma_khach_hang'  => $clients['ma_khach_hang'],
                                 'ten_nguoi_nhan' => $_POST['ten_nguoi_nhan'],
                                 'dia_chi'        => $_POST['dia_chi'],
                                 'dien_thoai'     => $_POST['dien_thoai'],
                                 'tri_gia'        => $_SESSION['TongSoTien'],
                                 );
-                //var_dump($dataHoaDon); exit();
-                $KhachHangModel = new ClientModel();
-                if($SoHD = $KhachHangModel->addInvoices($dataHoaDon))
+                //var_dump($invoices); exit();
+                $clientModel = new ClientModel();
+                if($idInvoice = $clientModel->addInvoices($invoices))
                 {
-                    $gio_hang = new Gio_hang();
-                    $ttGH = $gio_hang->ThongTinGioHang();
-                    //var_dump($ttGH); exit;
-                    foreach($ttGH as $msp => $tt)
+                    $shoppingCart = new Gio_hang();
+                    $carts = $shoppingCart->ThongTinGioHang();
+                    //var_dump($carts); exit;
+                    foreach($carts as $idProduct => $cart)
                     {
-                        $ChiTietHD = array(
-                                'so_hoa_don'  =>$SoHD,
-                                'ma_san_pham' =>$msp,
-                                'so_luong'    =>$tt[1],
-                                'don_gia'     =>$tt[0],);
-                        $KhachHangModel->addDetailInvoices($ChiTietHD);
+                        $invoices = array(
+                                'so_hoa_don'  =>$idInvoice,
+                                'ma_san_pham' =>$idProduct,
+                                'so_luong'    =>$cart[1],
+                                'don_gia'     =>$cart[0],);
+                        $clientModel->addDetailInvoices($invoices);
                     }
-                    $gio_hang->HuyGioHang();
-                    header('location:'.path.'/khach-hang/thong-tin-don-hang/'.$SoHD); exit();
+                    $shoppingCart->HuyGioHang();
+                    header('location:'.path.'/khach-hang/thong-tin-don-hang/'.$idInvoice); exit();
                 }
             }
             $smarty = new SmartyController();
@@ -432,20 +427,20 @@ class FrontController
             if (isset($_POST['btnDangKy'])) {
                 $dataErr = $data = array();
 
-                $ten_khach_hang = $_POST['ten_khach_hang'];
+                $nameClient = $_POST['ten_khach_hang'];
                 $email = $_POST['email'];
-                $mat_khau = $_POST['mat_khau'];
+                $password = $_POST['mat_khau'];
 
-                if ($ten_khach_hang == '' || $email == '' || $mat_khau == '') {
+                if ($nameClient == '' || $email == '' || $password == '') {
                     //đảm bảo các trường không được để trống
                     $dataErr = "<span style='color:red'>Vui lòng điền đầy đủ thông tin.</span>";
                     $smarty->assign('message_dangky', $dataErr);
                 } else {
                     //validate input
-                    if (! preg_match("/^[a-zA-Z ]+$/", $ten_khach_hang)) {
+                    if (! preg_match("/^[a-zA-Z ]+$/", $nameClient)) {
                         $dataErr['ten_khach_hang'] = "Tên chỉ được chứa kí tự alphabets và khoảng trắng.";
                     } else {
-                        $data['ten_khach_hang'] = $ten_khach_hang;
+                        $data['ten_khach_hang'] = $nameClient;
                     }
 
                     if (! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $_POST['email'])) {
@@ -454,10 +449,10 @@ class FrontController
                         $data['email'] = $email;
                     }
 
-                    if (strlen($mat_khau) < 6) {
+                    if (strlen($password) < 6) {
                         $dataErr['mat_khau'] = "Mật khẩu ít nhất 6 kí tự.";
                     } else {
-                        $data['mat_khau'] = $mat_khau;
+                        $data['mat_khau'] = $password;
                     }
 
                     if (! empty($_POST['hide'])){
@@ -469,8 +464,8 @@ class FrontController
                 // var_dump($dataErr); exit();
                 if (! $dataErr) {
                     //insert dữ liệu khách hàng vào csdl
-                    $KhachHangModel = new ClientModel();
-                    $data['ma_khach_hang'] = $KhachHangModel->getClient($data);
+                    $clientModel = new ClientModel();
+                    $data['ma_khach_hang'] = $clientModel->getClient($data);
                     $_SESSION['khachhang'] = $data;
                     //var_dump($_SESSION['khachhang']); exit();
                     $smarty->display('front/checkout.tpl'); exit();
@@ -484,19 +479,19 @@ class FrontController
             if (isset($_POST['btnDangNhap'])) {
                 //Validate input
                 $email = addslashes($_POST['email']);
-                $mat_khau = addslashes($_POST['mat_khau']);
+                $password = addslashes($_POST['mat_khau']);
 
-                $KhachHangModel = new ClientModel();
-                $data = $KhachHangModel->getLogin($email, $mat_khau);
+                $clientModel = new ClientModel();
+                $data = $clientModel->getLogin($email, $password);
 
                 //var_dump($data); exit();
                 if ($data) {
                     // tạo session.khachhang
-                    $arrTTKhachHang = array(
+                    $infoClient = array(
                                     'ma_khach_hang'   =>$data['ma_khach_hang'],
                                     'ten_khach_hang'  =>$data['ten_khach_hang'],
                                     'email'           =>$email);
-                    $_SESSION['khachhang'] = $arrTTKhachHang;
+                    $_SESSION['khachhang'] = $infoClient;
                     //var_dump($_SESSION['khachhang']); exit();
                     $smarty->display('front/checkout.tpl'); exit();
                 } else {
@@ -506,27 +501,29 @@ class FrontController
             $smarty->display('front/login.tpl');
         }
     }
+
     public function getInfoInvoice()
     {
         if (isset($_GET['key'])) {
-            $soHD = $_GET['key'];
-            //echo $soHD; exit;
-            $KhachHangModel = new ClientModel();
-            $TTDonDatHang = $KhachHangModel->getInfoInvoicesByID($soHD);
-            //var_dump($TTDonDatHang); exit;
-            if (! $TTDonDatHang) {
+            $idInvoice = $_GET['key'];
+            //echo $idInvoice; exit;
+            $clientModel = new ClientModel();
+            $infoInvoice = $clientModel->getInfoInvoicesByID($idInvoice);
+            //var_dump($infoInvoices); exit;
+            if (! $infoInvoices) {
                 header('location:'.path); exit();
             }
             $smarty = new SmartyController();
-            $smarty->assign('DonDatHang', $TTDonDatHang);
+            $smarty->assign('DonDatHang', $infoInvoices);
             //gui mail thong tin don hang cho khach hang
-            $this->guiMail($TTDonDatHang);
+            $this->guiMail($infoInvoices);
             $smarty->display('front/invoice_details.tpl');
         }
     }
-    public function guiMail($HoaDon)
+
+    public function guiMail($infoInvoices)
     {
-        //var_dump($HoaDon); exit;
+        //var_dump($infoInvoices); exit;
         require 'library/PHPMailer/PHPMailerAutoload.php';
 
         $mail = new PHPMailer;
@@ -547,12 +544,12 @@ class FrontController
         $mail->Password = "atlantic.com"; //Mật khẩu của gmail
 
         $mail->setFrom('Atlantic', 'Admin'); // Thông tin người gửi
-        $mail->addAddress($HoaDon[0]['email'], $HoaDon[0]['ten_khach_hang']); //Email của người nhận
+        $mail->addAddress($infoInvoices[0]['email'], $infoInvoices[0]['ten_khach_hang']); //Email của người nhận
         $mail->isHTML(true);
 
         $mail->CharSet = "utf-8"; //Thiết lập định dạng font chữ
         $mail->Subject = 'Thông tin đơn đặt hàng'; //Tiêu đề của thư
-        $mail->Body    = $this->MailDonHang($HoaDon); //Nội dung của bức thư
+        $mail->Body    = $this->MailDonHang($infoInvoices); //Nội dung của bức thư
         
         //Tiến hành gửi email và kiểm tra lỗi
         if (! $mail->send()) {
@@ -560,46 +557,46 @@ class FrontController
             echo 'Mailer Error: ' . $mail->ErrorInfo;
         }
     }
-    public function MailDonHang($hoadon)
+    public function MailDonHang($infoInvoices)
     {
-        $noi_dung='
+        $content ='
         <table align="center" border="0" style="border:1px solid #00F;" width="100%">
             <tr>
-                <td>Tên khách hàng: '.$hoadon[0]['ten_khach_hang'].'</td>
-                <td>Tên người nhận: '.$hoadon[0]['ten_nguoi_nhan'].'</td>
+                <td>Tên khách hàng: '.$infoInvoices[0]['ten_khach_hang'].'</td>
+                <td>Tên người nhận: '.$infoInvoices[0]['ten_nguoi_nhan'].'</td>
             </tr>
             <tr>
-                <td colspan="4">Địa chỉ: '.$hoadon[0]['dia_chi'].'</td>
+                <td colspan="4">Địa chỉ: '.$infoInvoices[0]['dia_chi'].'</td>
             </tr>
             <tr>
-                <td >Số hóa đơn: '.$hoadon[0]['so_hoa_don'].'</td>
-                <td>Ngày đặt: '.$hoadon[0]['ngay_hd'].'</td>
+                <td >Số hóa đơn: '.$infoInvoices[0]['so_hoa_don'].'</td>
+                <td>Ngày đặt: '.$infoInvoices[0]['ngay_hd'].'</td>
             </tr>
             <tr>
                 <td colspan="2">
                     <table align="center" cellspacing="10px" border="0" width="100%">
                         <tr><td>STT</td><td>MÃ SÁCH</td><td>TỰA SÁCH</td><td>ĐƠN GIÁ</td><td>SỐ LƯỢNG</td><td>THÀNH TIỀN</td></tr>';
                 $i=1;$tt=0;
-                foreach($hoadon as $item)
+                foreach($infoInvoices as $item)
                 {
-                    $noi_dung.='<tr align="center">';
-                        $noi_dung.= '<td>'.$i.'</td>';
-                        $noi_dung.= '<td>'.$item['ma_san_pham'].'</td>';
-                        $noi_dung.= '<td>'.$item['ten_san_pham'].'</td>';
-                        $noi_dung.= '<td>'.$item['don_gia'].'</td>';
-                        $noi_dung.= '<td>'.$item['so_luong'].'</td>';
-                        $noi_dung.= '<td>'.number_format($item['don_gia']*$item['so_luong']).'</td>';
-                    $noi_dung.='</tr>';
+                    $content.='<tr align="center">';
+                        $content.= '<td>'.$i.'</td>';
+                        $content.= '<td>'.$item['ma_san_pham'].'</td>';
+                        $content.= '<td>'.$item['ten_san_pham'].'</td>';
+                        $content.= '<td>'.$item['don_gia'].'</td>';
+                        $content.= '<td>'.$item['so_luong'].'</td>';
+                        $content.= '<td>'.number_format($item['don_gia']*$item['so_luong']).'</td>';
+                    $content.='</tr>';
                     $tt=$tt+$item['so_luong']*$item['don_gia'];
                     $i++;
                 }
-                $noi_dung.='<tr><td colspan="5">Tổng trị giá hóa đơn</td><td>'.number_format($tt).'</td></tr>';    
-                $noi_dung.='</table>        
+                $content.='<tr><td colspan="5">Tổng trị giá hóa đơn</td><td>'.number_format($tt).'</td></tr>';    
+                $content.='</table>        
                 </td>
             </tr>
         </table>        
         ';
-        return $noi_dung;
+        return $content;
     }
     public function careClient()
     {
@@ -648,8 +645,8 @@ class FrontController
             // var_dump($dataErr); exit();
             if (! $dataErr) {
                 //nếu không có lỗi xảy ra thì insert yêu cầu của khách hàng vào csdl
-                $KhachHangModel = new ClientModel();
-                if ($KhachHangModel->addRequire($data)) {
+                $clientModel = new ClientModel();
+                if ($clientModel->addRequire($data)) {
                     $smarty->assign('message',"<span style='color:blue'>Cảm ơn tin nhắn của bạn, chúng tôi sẽ hồi đáp trong thời gian sớm nhất.</span>");
                 }
             } else {
@@ -678,11 +675,11 @@ class FrontController
             
             //Nếu email hợp lệ thì check email trong csdl
             if (! $err) {
-                $KhachHangModel = new ClientModel();
-                $CheckEmail = $KhachHangModel->checkEmail($email);
-                if ($CheckEmail) {
+                $clientModel = new ClientModel();
+                $checkEmail = $clientModel->checkEmail($email);
+                if ($checkEmail) {
                     //Mã hóa email
-                    $email = $CheckEmail['email'];
+                    $email = $checkEmail['email'];
                     $salt = "498#2D83B631%3800EBD!801600D*7E3CC13";
                     $hash = hash('sha512', $salt.$email);
                     //Gửi link reset password qua mail cho khách hàng
@@ -729,8 +726,8 @@ class FrontController
     public function MailResetPass($hash)
     {
         $url = path.'/khach-hang/reset-password/'.$hash;
-        $noi_dung = "Dear user,\n\nIf this e-mail does not apply to you please ignore it. It appears that you have requested a password reset at our website www.yoursitehere.com\n\nTo reset your password, please click the link below. If you cannot click it, please paste it into your web browser's address bar.\n\n" . $url . "\n\nThanks,\nThe Administration";
-        return $noi_dung;
+        $content = "Dear user,\n\nIf this e-mail does not apply to you please ignore it. It appears that you have requested a password reset at our website www.yoursitehere.com\n\nTo reset your password, please click the link below. If you cannot click it, please paste it into your web browser's address bar.\n\n" . $url . "\n\nThanks,\nThe Administration";
+        return $content;
     }
     public function resetPassWord()
     {
@@ -752,13 +749,15 @@ class FrontController
 
                 if ($password == $confirmpassword) {
                     //Update password vao csdl
-                    $KhachHangModel = new ClientModel();
-                    if ($KhachHangModel->updatePassWord($password,$postemail)){
+                    $clientModel = new ClientModel();
+                    if ($clientModel->updatePassWord($password, $postemail)){
                         $smarty->assign('alert',"Your password has been successfully reset.");
                     }
+
                 } else {
                     $smarty->assign('alert',"Your password's do not match.");
                 }
+                
             } else {
                 $smarty->assign('alert',"Your password reset key is invalid.");
             }
