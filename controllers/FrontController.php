@@ -10,6 +10,11 @@ include_once('library/Pager.php');
 
 class FrontController
 {
+    /**
+     * Home page
+     * 
+     * @return void
+     */
 	public function index()
 	{
         $subjectModel = new SubjectModel();
