@@ -5,7 +5,7 @@ include_once('models/ClientModel.php');
 include_once('models/CommentModel.php');
 include_once('models/ProductModel.php');
 include_once('models/SubjectModel.php');
-include_once('library/Gio_hang.php');
+include_once('library/ShoppingCart.php');
 include_once('library/Pager.php');
 
 class FrontController
@@ -141,7 +141,7 @@ class FrontController
                 $countProduct = $productModel->countProductsInSubject($idSubject);
                 //var_dump($countProduct); exit();
                 $pages = $pager->findPages($countProduct[0], $limit);
-                $pageLink = $pager->pageLink($_GET['page'], $pages, $chuoi);
+                $pageLink = $pager->pageLink($_GET['page'], $pages, $stringUrl);
                 
                 $products = $productModel->getProductInSubject($idSubject);
                 //var_dump($products); exit();
@@ -191,12 +191,12 @@ class FrontController
 
             //Thêm sách vào giỏ hàng
             if (isset($_POST['btnMua'])) {
-                $shoppingCart = new Gio_hang();
+                $shoppingCart = new ShoppingCart();
                 $idProduct = $products['ma_san_pham'];
                 $nameProduct = $products['ten_san_pham'];
                 $price = $products['gia_ban'];
                 $number = $_POST['soluong'];
-                $shoppingCart->Them($idProduct, $nameProduct, $price, $number);
+                $shoppingCart->add($idProduct, $nameProduct, $price, $number);
                 //var_dump($_SESSION['giohang']); exit();
             }
 
@@ -257,26 +257,26 @@ class FrontController
     
     public function getInfoCart() 
     {
-        $shoppingCart = new Gio_hang();
+        $shoppingCart = new ShoppingCart();
 
         if (isset($_POST['btnCapNhat'])) {
-            $carts = $shoppingCart->ThongTinGioHang();
+            $carts = $shoppingCart->getinfoCart();
 
             if ($carts) {
 
                 foreach($carts as $idProduct => $cart) {
                     $newNumber = $_POST['sl_'.$idProduct];
-                    if ($newNumber != $tt[1]) {
-                        $carts->CapNhatGioHang($idProduct, $newNumber);
+                    if ($newNumber != $cart[1]) {
+                        $shoppingCart->updateCart($idProduct, $newNumber);
                     }
                 }
             }
         }
-        $carts = $shoppingCart->ThongTinGioHang();
+        $carts = $shoppingCart->getinfoCart();
         //var_dump($carts);exit();
         $smarty = new SmartyController();
         if ($carts) {
-            $shoppingCart->TongSoTien();
+            $shoppingCart->getpriceTotal();
             $smarty->assign('ttgh', $carts);
         }
         $smarty->display('front/shopping_cart.tpl');
@@ -284,8 +284,8 @@ class FrontController
 
     public function deleteCart() 
     {
-        $shoppingCart = new Gio_hang();
-        $shoppingCart->HuyGioHang();
+        $shoppingCart = new ShoppingCart();
+        $shoppingCart->deleteCart();
         header('location:'.path.'/khach-hang/gio-hang');
     }
     public function createAccount()
@@ -395,14 +395,14 @@ class FrontController
                                 'ten_nguoi_nhan' => $_POST['ten_nguoi_nhan'],
                                 'dia_chi'        => $_POST['dia_chi'],
                                 'dien_thoai'     => $_POST['dien_thoai'],
-                                'tri_gia'        => $_SESSION['TongSoTien'],
+                                'tri_gia'        => $_SESSION['priceTotal'],
                                 );
                 //var_dump($invoices); exit();
                 $clientModel = new ClientModel();
                 if($idInvoice = $clientModel->addInvoices($invoices))
                 {
-                    $shoppingCart = new Gio_hang();
-                    $carts = $shoppingCart->ThongTinGioHang();
+                    $shoppingCart = new ShoppingCart();
+                    $carts = $shoppingCart->getinfoCart();
                     //var_dump($carts); exit;
                     foreach($carts as $idProduct => $cart)
                     {
@@ -757,7 +757,7 @@ class FrontController
                 } else {
                     $smarty->assign('alert',"Your password's do not match.");
                 }
-                
+
             } else {
                 $smarty->assign('alert',"Your password reset key is invalid.");
             }

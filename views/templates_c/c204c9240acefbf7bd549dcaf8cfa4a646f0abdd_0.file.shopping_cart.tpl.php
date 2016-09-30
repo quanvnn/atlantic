@@ -1,17 +1,17 @@
 <?php
-/* Smarty version 3.1.29, created on 2016-09-29 11:41:19
+/* Smarty version 3.1.29, created on 2016-09-30 09:27:57
   from "/home/lequan/IMAD/atlantic/views/templates/front/shopping_cart.tpl" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.29',
-  'unifunc' => 'content_57ec9b6f687b44_84469334',
+  'unifunc' => 'content_57edcdad1d5cb0_90219408',
   'file_dependency' => 
   array (
     'c204c9240acefbf7bd549dcaf8cfa4a646f0abdd' => 
     array (
       0 => '/home/lequan/IMAD/atlantic/views/templates/front/shopping_cart.tpl',
-      1 => 1475124032,
+      1 => 1475202471,
       2 => 'file',
     ),
   ),
@@ -20,14 +20,14 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
     'file:layouts/layout.tpl' => 1,
   ),
 ),false)) {
-function content_57ec9b6f687b44_84469334 ($_smarty_tpl) {
+function content_57edcdad1d5cb0_90219408 ($_smarty_tpl) {
 $_smarty_tpl->ext->_inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
 $_smarty_tpl->ext->_inheritance->processBlock($_smarty_tpl, 0, 'content', array (
-  0 => 'block_148816879457ec9b6f65ca91_20964837',
+  0 => 'block_84275450557edcdad1b02b7_04461020',
   1 => false,
   3 => 0,
   2 => 0,
@@ -36,7 +36,7 @@ $_smarty_tpl->ext->_inheritance->endChild($_smarty_tpl);
 $_smarty_tpl->smarty->ext->_subtemplate->render($_smarty_tpl, "file:layouts/layout.tpl", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 2, false);
 }
 /* {block 'content'}  file:front/shopping_cart.tpl */
-function block_148816879457ec9b6f65ca91_20964837($_smarty_tpl, $_blockParentStack) {
+function block_84275450557edcdad1b02b7_04461020($_smarty_tpl, $_blockParentStack) {
 ?>
 
 
@@ -123,13 +123,13 @@ $_smarty_tpl->tpl_vars['msp'] = $__foreach_tt_0_saved_key;
 			 <div class="price-details">
 				 <h3>CHI TIẾT ĐƠN HÀNG</h3>
 				 <span>Tổng tiền</span>
-				 <span class="total1"><?php echo number_format($_SESSION['TongSoTien']);?>
+				 <span class="total1"><?php echo number_format($_SESSION['priceTotal']);?>
  đ</span>
 				 <span>Giảm giá</span>
 				 <span class="total1">---</span>
 				 <span>Phí Vận Chuyển</span>
 				 <span class="total1">
-				 	<?php if ($_SESSION['TongSoTien'] < 100000) {?>
+				 	<?php if ($_SESSION['priceTotal'] < 100000) {?>
 				 		<?php echo number_format(10000);?>
  đ
 				 		<?php $_smarty_tpl->tpl_vars['phivanchuyen'] = new Smarty_Variable(10000, null);
@@ -144,7 +144,7 @@ $_smarty_tpl->ext->_updateScope->updateScope($_smarty_tpl, 'phivanchuyen', 0);?>
 			 </div>	
 			 <ul class="total_price">
 			   <li class="last_price"> <h4>Tổng tiền</h4></li>	
-			   <li class="last_price"><span><?php echo number_format($_SESSION['TongSoTien']+$_smarty_tpl->tpl_vars['phivanchuyen']->value);?>
+			   <li class="last_price"><span><?php echo number_format($_SESSION['priceTotal']+$_smarty_tpl->tpl_vars['phivanchuyen']->value);?>
  đ</span></li>
 			   <div class="clearfix"> </div>
 			 </ul>
