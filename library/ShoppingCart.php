@@ -2,21 +2,22 @@
 //session_start();
 class ShoppingCart
 {
-    public function add($id, $ten, $dg, $sl)
+    public function add($id, $name, $price, $number)
     {        
         if (isset($_SESSION['giohang'])) {
 
-            $giohang = $_SESSION['giohang'];
-            if (isset($giohang[$id]))
+            $carts = $_SESSION['giohang'];
+            if (isset($carts[$id])) {
                 //Kiem tra sp co msp nay ton tai trong gio hang hay chua?
                 //neu da co trong gio hang roi thi cong them so luong vua submit vao
-                $giohang[$id] = array($dg, $giohang[$id][1]+$sl, $ten);
+                $carts[$id] = array($price, $carts[$id][1]+$number, $name);
+            }
             else
                 //neu sp chua co trong gio hang thi them thong tin sp vao gio hang
-                $giohang[$id] = array($dg, $sl, $ten);
-            $_SESSION['giohang'] = $giohang;    
+                $carts[$id] = array($price, $number, $name);
+            $_SESSION['giohang'] = $carts;    
         } else
-            $_SESSION['giohang'] = array($id=>array($dg, $sl, $ten));
+            $_SESSION['giohang'] = array($id=>array($price, $number, $name));
     }
     public function getnumberTotal()
     {
