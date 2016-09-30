@@ -45,10 +45,12 @@ class HelperController
 		}
 		return $result;
 	}
+
 	public function getDataErr()
 	{
 		return $this->dataErr;
 	}
+	
 	public function checkimage($img)
 	{
 		//$img = $_FILES['hinh'];

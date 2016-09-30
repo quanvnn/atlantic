@@ -692,6 +692,14 @@ class FrontController
         }
         $smarty->display('front/forgot.tpl');
     }
+
+    /**
+     * Send email to client 
+     * 
+     * @param  string $email
+     * @param  [type]
+     * @return [type]
+     */
     public function sendMailResetPassword($email,$hash)
     {
         //var_dump($HoaDon); exit;
@@ -723,19 +731,24 @@ class FrontController
             echo 'Mailer Error: ' . $mail->ErrorInfo;
         }
     }
+
     public function MailResetPass($hash)
     {
         $url = path.'/khach-hang/reset-password/'.$hash;
         $content = "Dear user,\n\nIf this e-mail does not apply to you please ignore it. It appears that you have requested a password reset at our website www.yoursitehere.com\n\nTo reset your password, please click the link below. If you cannot click it, please paste it into your web browser's address bar.\n\n" . $url . "\n\nThanks,\nThe Administration";
         return $content;
     }
-    public function resetPassWord()
+
+    /**
+    *@return mixed
+    */
+    public function resetPassword()
     {
         $smarty = new SmartyController();
         if (isset($_POST['btnResetPassWord'])) {
             $postemail = $_POST['email']; // giá trị email nhập vào
             $password = $_POST['password'];
-            $confirmpassword = $_POST['confirmpassword'];
+            $confirmpassword = $_POST['confirm_password'];
             $getemail = $_GET['key']; // giá trị email GET
             // Mã hóa email nhập vào để so sánh với mail từ biến GET
             $salt = "498#2D83B631%3800EBD!801600D*7E3CC13";

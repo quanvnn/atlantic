@@ -5,7 +5,7 @@ chdir(dirname(__DIR__));
 define('path', 'http://atlantic.dev');
 require_once "smarty/libs/Smarty.class.php";
 require_once "models/CategoryModel.php";
-include_once "library/Gio_hang.php";
+include_once "library/ShoppingCart.php";
 
 class SmartyController extends Smarty
 {
