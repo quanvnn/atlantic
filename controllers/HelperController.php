@@ -1,18 +1,26 @@
 <?php
 class HelperController
 {
-	private $dataErr = array(
-							'ten_san_pham'=>'', 
-							'ten_san_pham_url'=>'',
-							'mo_ta'=>'',
-							'gia_bia'=>'',
-							'gia_ban'=>'',
-							'hinh'=>'',
-							'ten_loai'=>'',
-							'ten_loai_san_pham_url'=>'',
-							'ten_chu_de'=>'',
-							'ten_chu_de_url'=>'',
-							);
+	private $dataErr = [
+						'ten_san_pham'=>'', 
+						'ten_san_pham_url'=>'',
+						'mo_ta'=>'',
+						'gia_bia'=>'',
+						'gia_ban'=>'',
+						'hinh'=>'',
+						'ten_loai'=>'',
+						'ten_loai_san_pham_url'=>'',
+						'ten_chu_de'=>'',
+						'ten_chu_de_url'=>'',
+					];
+
+	/**
+	 * Funtion check data product
+	 * Data must not be empty
+	 * 
+	 * @param  array $data
+	 * @return bool
+	 */
 	public function checkData($data)
 	{
 		$result = true;
@@ -27,7 +35,7 @@ class HelperController
 			$this->dataErr['ten_san_pham_url'] = $message;
 			$result = false;
 		}
-		if ($data['mo_ta']=='') {
+		if ($data['mo_ta'] =='') {
 			$this->dataErr['mo_ta'] = $message;
 			$result = false;
 		}
@@ -46,11 +54,21 @@ class HelperController
 		return $result;
 	}
 
+	/**
+	 * Get data error after check
+	 * 
+	 * @return array
+	 */
 	public function getDataErr()
 	{
 		return $this->dataErr;
 	}
 	
+	/**
+	 * Function check file ? image
+	 * @param  array $img
+	 * @return bool
+	 */
 	public function checkimage($img)
 	{
 		//$img = $_FILES['hinh'];
@@ -69,6 +87,14 @@ class HelperController
         }
         return $imgUploadOk;
 	}
+
+	/**
+	 * Check data categories
+	 * Data must not be empty
+	 * 
+	 * @param  array $data
+	 * @return bool
+	 */
 	public function checkDataCategory($data)
 	{
 		$result = true;
@@ -85,6 +111,14 @@ class HelperController
 		}
 		return $result;
 	}
+
+	/**
+	 * Check data subjects
+	 * Data must not be empty
+	 * 
+	 * @param  array $data
+	 * @return bool
+	 */
 	public function checkDataSubject($data)
 	{
 		//var_dump($data);exit();

@@ -14,18 +14,65 @@ include_once('models/AdminModel.php');
  */
 class AdminController
 {   
+    private $adminModel;
+    private $categoryModel;
+    private $commentModel;
+    private $productModel;
+    private $invoiceModel;
+    private $contactModel;
+    private $subjectModel;
+
+    /**
+     * Get admin model
+     * 
+     * @return class
+     */
+    private function getAdminModel()
+    {
+        return $this->adminModel = new AdminModel();
+    }
+
+    private function getCategoryModel()
+    {
+        return $this->categoryModel = new CategoryModel();
+    }
+
+    private function getCommentModel()
+    {
+        return $this->commentModel = new CommentModel();
+    }
+
+    private function getProductModel()
+    {
+        return $this->productModel = new ProductModel();
+    }
+
+    private function getInvoiceModel()
+    {
+        return $this->invoiceModel = new InvoiceModel();
+    }
+
+    private function getContactModel()
+    {
+        return $this->contactModel = new ContactModel();
+    }
     
+    private function getSubjectModel()
+    {
+        return $this->subjectModel = new SubjectModel();
+    }
+
+
 
     /**
      * Function redirect
      * 
-     * @param  string $url: example $url = 'admin.html'
+     * @param  string $url, example $url = 'admin.html'
      * @return void
      */
     public function redirect($url)
     {
-        header('location:'.path.'/'.$url);
-        exit();
+        header('location:'.path.'/'.$url); exit();
     }
 
     public function redirectToCommentPage()
@@ -63,6 +110,9 @@ class AdminController
         return $this->redirect('quan-tri/chu-de.html');
     }    
 
+
+    
+
     /**
      * Sign up admin account
      *
@@ -86,8 +136,7 @@ class AdminController
             parse_str($_COOKIE[$COOKIE_NAME]);
 
             // Check user name and pass with database
-            $adminModel = new AdminModel();
-            $admin = $adminModel->getInfoAdmin($username, $password);
+            $admin = $this->getAdminModel()->getInfoAdmin($username, $password);
 
             if ($admin) {
                 //Create session admin
@@ -111,8 +160,8 @@ class AdminController
             $pass = addslashes($_POST['mat_khau']);
 
             // Check user name and pass with database
-            $adminModel = new AdminModel();
-            $admin = $adminModel->getInfoAdmin($username, md5($pass));
+            //$adminModel = new AdminModel();
+            $admin = $this->getAdminModel()->getInfoAdmin($username, md5($pass));
 
             if ($admin) {
                 // Create session admin
@@ -183,8 +232,7 @@ class AdminController
     public function manageProducts()
     {
         // Get products
-        $adminModel = new AdminModel();
-        $products = $adminModel->getProductAdmin();
+        $products = $this->getAdminModel()->getProductAdmin();
 
         if ($products) {
             $smarty = new SmartyController();
@@ -207,7 +255,7 @@ class AdminController
 
     /**
      * Delete products base on product id
-     *
+     * And delete old image
      * @return void
      */
     public function deleteProduct()
@@ -218,16 +266,14 @@ class AdminController
             $idProduct = $this->validateId($_GET['key']);
 
             // Delete product by id
-            $productModel = new ProductModel();
-            $product = $productModel->getProductById($idProduct);
+            $product = $this->getProductModel()->getProductById($idProduct);
 
                 // Delete old image
                 if(file_exists('./public/hinh_san_pham/'.$product['hinh'])) {
                     unlink('./public/hinh_san_pham/'.$product['hinh']);
                     
                     // Delete product
-                    $admin = new AdminModel();
-                    $admin->deleteProduct($idProduct);
+                    $this->getAdminModel()->deleteProduct($idProduct);
                 }
 
                 $this->redirectToProductPage();
@@ -295,8 +341,7 @@ class AdminController
                     if (move_uploaded_file($img['tmp_name'],'./public/hinh_san_pham/'.$data['hinh'])) {
                         
                         // Insert products into database
-                        $admin = new AdminModel();
-                        $admin->addProduct($data);
+                        $this->getAdminModel()->addProduct($data);
 
                         // Confirm a message success to admin
                         $alert = 'Thêm sản phẩm thành công!';
@@ -321,12 +366,11 @@ class AdminController
         $smarty->assign('mangErr', $arrayErr);
         
         // Display categories to views
-        $categoryModel = new CategoryModel();
-        $smarty->assign('DSLoaiSanPham', $categoryModel->getCat());
+        $smarty->assign('DSLoaiSanPham', $this->getCategoryModel()->getCat());
 
         // Display subjects to views
         $subjectModel = new SubjectModel();
-        $smarty->assign('DanhSachChuDe', $subjectModel->getSubject());
+        $smarty->assign('DanhSachChuDe', $this->getSubjectModel()->getSubject());
 
         // Confirm alert
         $smarty->assign('alert', $alert);
@@ -349,17 +393,8 @@ class AdminController
             $this->redirectToProductPage();
         }
 
-        // Display categories
-        $categoryModel = new CategoryModel();
-        $categories = $categoryModel->getCat(); 
-
-        // Display subjects
-        $subjectModel = new SubjectModel();
-        $subjects = $subjectModel->getSubject();
-
         // Display products
-        $productModel = new ProductModel();
-        $products = $productModel->getProductById($idProduct); 
+        $products = $this->getProductModel()->getProductById($idProduct); 
 
         // use $oldImage to delete file image after upload new product
         $oldImgage = $products['hinh'];
@@ -419,10 +454,10 @@ class AdminController
                             unlink('./public/hinh_san_pham/'.$oldImgage);
                         }
                         
-                        // Update product
                         $products['hinh'] = $imageName;
-                        $admin = new AdminModel();
-                        $admin->updateProduct($products);
+                        
+                        // Update product
+                        $this->getAdminModel()->updateProduct($products);
                         
                         // Confirm a message seccess to admin
                         $alert = 'Cập nhật sản phẩm thành công!';
@@ -443,10 +478,10 @@ class AdminController
         $smarty->assign('mangErr', $arrayErr);
 
         // Display categories to view
-        $smarty->assign('DSLoaiSanPham', $categories);
+        $smarty->assign('DSLoaiSanPham', $this->getCategoryModel()->getCat());
 
         // Display subjects to view
-        $smarty->assign('DanhSachChuDe', $subjects);
+        $smarty->assign('DanhSachChuDe', $this->getSubjectModel()->getSubject());
 
         // Display alert to view
         $smarty->assign('alert', $alert);
@@ -462,8 +497,7 @@ class AdminController
     public function manageCategories()
     {
         // Get data categories
-        $categoryModel = new CategoryModel();
-        $categories = $categoryModel->getCat();
+        $categories = $this->getCategoryModel()->getCat();
         
         if ($categories) {
             $smarty = new SmartyController();
@@ -487,8 +521,7 @@ class AdminController
             $idCategory = $this->validateId($_GET['key']);
 
             // Delete category
-            $adminModel = new AdminModel();
-            $adminModel->deleteCat($idCategory);
+            $this->getAdminModel()->deleteCat($idCategory);
 
             $this->redirectToCategoryPage();
         }
@@ -530,8 +563,7 @@ class AdminController
             // Check data categories
             if ($check->checkDataCategory($data['loaicha'])) {
                 // Insert categories into database
-                $adminModel = new AdminModel();
-                $adminModel->addCat($data['loaicha']);
+                $this->getAdminModel()->addCat($data['loaicha']);
 
                 // Confirm a message seccess
                 $alert['loaicha'] = 'Thêm thành công!';
@@ -544,9 +576,9 @@ class AdminController
         // Submit form add sub category
         if (isset($_POST['btnThemLoaiCon'])) {
             $data['loaicon'] = [
-                                    'ten_loai'                 =>$_POST['ten_loai'],
-                                    'ten_loai_san_pham_url'    =>$_POST['ten_loai_san_pham_url'],
-                                    'ma_loai_cha'              =>$_POST['ma_loai']
+                                'ten_loai'                 =>$_POST['ten_loai'],
+                                'ten_loai_san_pham_url'    =>$_POST['ten_loai_san_pham_url'],
+                                'ma_loai_cha'              =>$_POST['ma_loai']
                             ];
             
             $check = new HelperController();
@@ -554,8 +586,7 @@ class AdminController
             // Check data categories
             if ($check->checkDataCategory($data['loaicon'])) {
                 // Insert sub categories into database
-                $adminModel = new AdminModel();
-                $adminModel->addSubCat($data['loaicon']);
+                $this->getAdminModel()->addSubCat($data['loaicon']);
 
                 // Confirm a message seccess
                 $alert['loaicon'] = 'Thêm thành công!';
@@ -575,11 +606,9 @@ class AdminController
         $smarty->assign('mangErr', $arrayErr);
         $smarty->assign('alert', $alert);
 
-        // Get categories
-        $categoryModel = new CategoryModel();
-        $categories = $categoryModel->getCat();
         // Display categories to view
-        $smarty->assign('DSLoaiSanPham', $categories);
+        $smarty->assign('DSLoaiSanPham', $this->getCategoryModel()->getCat());
+
         $smarty->display('admin/add_category.tpl');
     }
 
@@ -598,8 +627,7 @@ class AdminController
         }
 
         // Get Categories by id
-        $categoryModel = new CategoryModel();
-        $data = $categoryModel->getCatByID($idProduct);
+        $data = $this->getCategoryModel()->getCatByID($idProduct);
 
         // If fail
         if (! $data) {
@@ -626,9 +654,9 @@ class AdminController
             // Check data category
             $check = new HelperController();
             if ($check->checkDataCategory($data)) {
+
                 // Insert data categories intio database
-                $adminModel = new AdminModel();
-                $adminModel->updateCat($data);
+                $this->getAdminModel()->updateCat($data);
                 
                 // Confirm a message success
                 $alert = 'Cập nhật thành công!';
@@ -639,14 +667,13 @@ class AdminController
         }
 
         $smarty = new SmartyController();
+        
         $smarty->assign('data', $data);
+
         $smarty->assign('mangErr', $arrayErr);
 
-        // Display categories to view
-        $categories = $categoryModel->getCat();
-        $smarty->assign('DSLoaiSanPham', $categories);
-
         $smarty->assign('alert', $alert);
+
         $smarty->display('admin/update_category.tpl');
     }
 
@@ -665,12 +692,8 @@ class AdminController
             $this->redirectToCategoryPage();
         }
         
-        // Get categories list to display out browser
-        $categoryModel = new CategoryModel();
-        $categories = $categoryModel->getCat();
-        
         // Get info category by id
-        $data = $categoryModel->getCatByID($idProduct); 
+        $data = $this->getCategoryModel()->getCatByID($idProduct); 
         
         if (! $data) {
             $this->redirectToCategoryPage();
@@ -697,8 +720,7 @@ class AdminController
             if ($check->checkDataCategory($data)) {
                 
                 // Insert categories into database
-                $admin = new AdminModel();
-                $admin->updateSubCat($data);
+                $this->getAdminModel()->updateSubCat($data);
                 
                 // Confirm to browser
                 $alert = 'Cập nhật thành công!';
@@ -710,10 +732,16 @@ class AdminController
         }
 
         $smarty = new SmartyController();
+        
         $smarty->assign('data', $data);
+        
         $smarty->assign('mangErr', $arrayErr);
-        $smarty->assign('DSLoaiSanPham', $categories);
+
+        // Get categories list to display out browser
+        $smarty->assign('DSLoaiSanPham', $this->getCategoryModel()->getCat());
+
         $smarty->assign('alert', $alert);
+
         $smarty->display('admin/update_subcategory.tpl');
     }
 
@@ -725,8 +753,7 @@ class AdminController
     public function manageSubject()
     {
         // Get data subjects
-        $subjectModel = new SubjectModel();
-        $subjects = $subjectModel->getSubject();
+        $subjects = $this->getSubjectModel()->getSubject();
         
         if ($subjects) {
             $smarty = new SmartyController();
@@ -827,8 +854,7 @@ class AdminController
         }
 
         // Get subject by id
-        $subjectModel = new SubjectModel();
-        $data = $subjectModel->getSubjectID($idSubject);
+        $data = $this->getSubjectModel()->getSubjectID($idSubject);
 
         // Use old image name to delete old image when upload new image
         $oldImgage = $data['hinh'];
@@ -879,8 +905,7 @@ class AdminController
                         $data['hinh'] = $imageName;
 
                         // Insert data subject into database
-                        $admin = new AdminModel();
-                        $admin->updateSubject($data);
+                        $this->getAdminModel()->updateSubject($data);
                         
                         // Confirm to browser
                         $alert = 'Cập nhật thành công!';
@@ -908,8 +933,7 @@ class AdminController
     public function manageInvoices()
     {
         // Get data invoices
-    	$invoiceModel = new InvoiceModel();
-    	$invoices = $invoiceModel->getInvoices();
+    	$invoices = $this->getInvoiceModel()->getInvoices();
 
     	// Display invoices to views
     	$smarty = new SmartyController();
@@ -934,8 +958,7 @@ class AdminController
     		$idInvoice = $this->validateId($_GET['key']);
 
             // Get data invoices
-    		$invoiceModel = new InvoiceModel();
-    		$invoices = $invoiceModel->getInfoInvoice($idInvoice);
+    		$invoices = $this->getInvoiceModel()->getInfoInvoice($idInvoice);
 
     		// Display invoices to views
     		if ($invoicesDetail) {
@@ -958,8 +981,7 @@ class AdminController
     public function manageRequireClient()
     {
         // Get request client
-        $contactModel = new ContactModel();
-        $requestClient = $contactModel->getRequireClient();
+        $requestClient = $this->getContactModel()->getRequireClient();
         
         // Display request client
         $smarty = new SmartyController();
@@ -977,8 +999,7 @@ class AdminController
      */
     public function manageComment()
     {
-        $commentModel = new CommentModel();
-        $comments = $commentModel->getCommentAdmin();
+        $comments = $this->getCommentModel()->getCommentAdmin();
         //var_dump($comments); exit();
         
         $smarty = new SmartyController();
@@ -1001,8 +1022,7 @@ class AdminController
             // Comment id
             $idComment = $this->validateId($_GET['key']);
             
-            $commentModel = new CommentModel();
-            $commentModel->deleteComment($idComment);
+            $this->getCommentModel()->deleteComment($idComment);
 
             $this->redirectToCommentPage();
         } else {
@@ -1010,4 +1030,3 @@ class AdminController
         }
     }
 }// ./ AdminController
-?>
