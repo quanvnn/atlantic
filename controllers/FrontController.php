@@ -23,12 +23,16 @@ class FrontController
         $smarty->assign('DSChuDe', $subjects);
 		$smarty->display('home.tpl');
 	}
+
+    /**
+     * Get products in categories
+     * Get url from $_GET to query id category, then query sub categories base on id category
+     * Then, get products from array id sub categories
+     * 
+     * @return avoid
+     */
 	public function getProductsInCat()
 	{
-		//sản phẩm theo loại cha chính là danh sách sản phẩm theo loại con của thằng loại cha
-        //nhận url loại cha từ GET -> truy xuất mã loại cha -> truy xuất danh sách loại con dựa vào mã loại cha
-        //-> tạo một mảng chứa các mã loại con từ danh sách loại con
-        //-> tách mảng thành chuỗi mã loại để truy xuất danh sách sản phẩm dựa vào chuỗi mã loại đó
         if (isset($_GET['key'])) {
             
             $stringUrl = $_GET['key']; 
@@ -43,18 +47,18 @@ class FrontController
                 //var_dump($subCategories); exit();
 
                 if ($subCategories) {
-                    // Tạo một mảng chứa các mã loại con
+                    // Create array id sub categories
                     $arrayIdCategories = array();
 
                     foreach ($subCategories as $subCategory) {
                         $arrayIdCategories[] = $subCategory['ma_loai'];
                     }
 
-                    // Tách mảng mã loại con thành 1 chuỗi
+                    // Imolode array id sub categories to string
                     $stringIdCategory = implode(',', $arrayIdCategories); 
                     //echo $stringIdCategory; exit();
                     $productModel = new ProductModel();
-                    // phân trang
+                    // Pagination
                     $pager = new Pager();
                     $limit = 8;
                     $start = $pager->findStart($limit); //echo $start; exit();
@@ -63,7 +67,7 @@ class FrontController
                     $pages = $pager->findPages($countProduct[0], $limit);
                     $pageLink = $pager->pageLink($_GET['page'], $pages, $stringUrl);  
                     //echo ($pageLink); exit();
-                    // End phân trang
+                    
                     $products = $productModel->getProductsInSubCat($stringIdCategory, $start, $limit);
                     if ($products) {
                         $smarty->assign('DSSanPham', $products);
@@ -78,6 +82,12 @@ class FrontController
             }  
         }
 	}
+
+    /**
+     * Get products in sub categories
+     * 
+     * @return avoid
+     */
     public function getProductsInSubCat()
     {
         if (isset($_GET['key'])) 
@@ -88,7 +98,7 @@ class FrontController
             $subCategories = $categoryModel->getCatByUrl($stringUrl);
             //var_dump($subCategories); exit();
             if ($subCategories) {
-                //dùng cho breadcrumb
+                // Use breadcrumb
                 $categories = $categoryModel->getCatByID($subCategories['ma_loai_cha']);
                 //var_dump($categories); exit();
 
@@ -126,6 +136,11 @@ class FrontController
         }
     }
 
+    /**
+     * Get products in subjects
+     * 
+     * @return avoid
+     */
     public function getProductInSubject()
     {
         if (isset($_GET['key'])) {
@@ -169,7 +184,11 @@ class FrontController
     }
 
     
-
+    /**
+     * Get product detail
+     * 
+     * @return avoid
+     */
     public function getProductDetails()
     {
         if (isset($_GET['key'])) {
@@ -186,7 +205,7 @@ class FrontController
             $smarty = new SmartyController();
             if ($products) {
                 $smarty->assign('san_pham', $products);
-                //Sản phẩm cùng loại
+                // Products in the same category
                 $productInTheSameCategory = $productModel->getProductsFromTheSameCat($idProduct, $products['ma_loai']); 
                 //var_dump($productInTheSameCategory);exit();
                 if ($productInTheSameCategory) {
@@ -194,7 +213,7 @@ class FrontController
                 }
             }
 
-            //Thêm sách vào giỏ hàng
+            // Add product in the cart
             if (isset($_POST['btnMua'])) {
                 $shoppingCart = new ShoppingCart();
                 $idProduct = $products['ma_san_pham'];
@@ -212,16 +231,16 @@ class FrontController
                 $idClient = $clients['ma_khach_hang'];
                 $idProduct = $products['ma_san_pham'];
 
-                //cắm cờ
+                //
                 $err = false;
 
-                //validate tiêu đề không chứa các kí tự đặc biệt ảnh hưởng truy vấn csdl
+                // Validate title
                 $title = addslashes($_POST['tieu_de']);
                 if (empty($title)) {
                     $smarty->assign('message',"<span style='color:red'>Vui lòng nhập tiêu đề.</span>");
                     $err = true;
                 } else {
-                    //validate mã hóa các thẻ html khi insert vào csdl
+                    // Validate mã hóa các thẻ html khi insert vào csdl
                     $title = htmlspecialchars($title);
                 }
                 

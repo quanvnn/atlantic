@@ -21,6 +21,7 @@ class AdminController
     private $invoiceModel;
     private $contactModel;
     private $subjectModel;
+    private $helperController;
 
     /**
      * Get admin model
@@ -62,10 +63,15 @@ class AdminController
         return $this->subjectModel = new SubjectModel();
     }
 
+    private function getHelperController()
+    {
+        return $this->helperController = new HelperController();
+    }
+
 
 
     /**
-     * Function redirect
+     * Function redirect user
      * 
      * @param  string $url, example $url = 'admin.html'
      * @return void
@@ -326,11 +332,9 @@ class AdminController
                             'hinh'                => $_FILES['hinh'],
                             'chu_de_id'           => $_POST['chu_de_id'],
                             ];
-            
-            $check = new HelperController();
 
             // Check validation array product
-            if ($check->checkData($data)) {
+            if ($this->getHelperController()->checkData($data)) {
                 
                 // Check image product
                 if ($check->checkimage($data['hinh'])) {
@@ -352,7 +356,7 @@ class AdminController
                 }
             } else {
                 // Confirm a message fail to admin
-                $arrayErr = $check->getDataErr();
+                $arrayErr = $this->getHelperController()->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -433,10 +437,8 @@ class AdminController
                 'chu_de_id'          =>$_POST['chu_de_id'],
                 ];
 
-            $check = new HelperController();
-
             // Check data products
-            if ($check->checkData($products)) {
+            if ($this->getHelperController()->checkData($products)) {
 
                 $newImage = $_FILES['hinh']; 
                 
@@ -464,7 +466,7 @@ class AdminController
                     }
                 }
             } else {
-                $arrayErr = $check->getDataErr();
+                $arrayErr = $this->getHelperController()->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -558,17 +560,15 @@ class AdminController
                             'ten_loai_san_pham_url'    => $_POST['ten_loai_san_pham_url'],
                             ];
 
-            $check = new HelperController();
-
             // Check data categories
-            if ($check->checkDataCategory($data['loaicha'])) {
+            if ($this->getHelperController()->checkDataCategory($data['loaicha'])) {
                 // Insert categories into database
                 $this->getAdminModel()->addCat($data['loaicha']);
 
                 // Confirm a message seccess
                 $alert['loaicha'] = 'Thêm thành công!';
             } else {
-                $arrayErr = $check->getDataErr();
+                $arrayErr = $this->getHelperController()->getDataErr();
                 $alert['loaicha'] = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -580,18 +580,16 @@ class AdminController
                                 'ten_loai_san_pham_url'    =>$_POST['ten_loai_san_pham_url'],
                                 'ma_loai_cha'              =>$_POST['ma_loai']
                             ];
-            
-            $check = new HelperController();
 
             // Check data categories
-            if ($check->checkDataCategory($data['loaicon'])) {
+            if ($this->getHelperController()->checkDataCategory($data['loaicon'])) {
                 // Insert sub categories into database
                 $this->getAdminModel()->addSubCat($data['loaicon']);
 
                 // Confirm a message seccess
                 $alert['loaicon'] = 'Thêm thành công!';
             } else {
-                $arrayErr = $check->getDataErr();
+                $arrayErr = $this->getHelperController()->getDataErr();
                 $alert['loaicon'] = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -652,8 +650,7 @@ class AdminController
                 );
 
             // Check data category
-            $check = new HelperController();
-            if ($check->checkDataCategory($data)) {
+            if ($this->getHelperController()->checkDataCategory($data)) {
 
                 // Insert data categories intio database
                 $this->getAdminModel()->updateCat($data);
@@ -661,7 +658,7 @@ class AdminController
                 // Confirm a message success
                 $alert = 'Cập nhật thành công!';
             } else {
-                $arrayErr = $check->getDataErr();
+                $arrayErr = $this->getHelperController()->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -716,8 +713,7 @@ class AdminController
                             ];
             
             // Check data category
-            $check = new HelperController();
-            if ($check->checkDataCategory($data)) {
+            if ($this->getHelperController()->checkDataCategory($data)) {
                 
                 // Insert categories into database
                 $this->getAdminModel()->updateSubCat($data);
@@ -726,7 +722,7 @@ class AdminController
                 $alert = 'Cập nhật thành công!';
             } else {
                 // Confirm error to browser
-                $arrayErr = $check->getDataErr();
+                $arrayErr = $this->getHelperController()->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -844,11 +840,11 @@ class AdminController
         // Validate $_GET
         if (isset($_GET['key'])) {
             
-            $stringUrl = $this->validateId($_GET['key']);
+            $stringUrl = $_GET['key'];
             
             $array = explode('-', $stringUrl); 
             
-            $idSubject = $array[count($array)-1];
+            $idSubject = $this->validateId($array[count($array)-1]);
         } else {
             $this->redirectToSubjectPage();
         }
@@ -883,8 +879,7 @@ class AdminController
                     ];
             
             // Check data subject
-            $check = new HelperController();
-            if ($check->checkDataSubject($data)) {
+            if ($this->helperController()->checkDataSubject($data)) {
 
                 $newImage = $_FILES['hinh'];
 
@@ -913,7 +908,7 @@ class AdminController
                 }
             } else {
                 // Confirm error
-                $arrayErr = $check->getDataErr();
+                $arrayErr = $this->helperController()->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
