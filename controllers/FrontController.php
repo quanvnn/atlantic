@@ -312,6 +312,7 @@ class FrontController
         $shoppingCart->deleteCart();
         header('location:'.path.'/khach-hang/gio-hang');
     }
+
     public function createAccount()
     {
         $smarty = new SmartyController();
@@ -394,6 +395,7 @@ class FrontController
         }
         $smarty->display('front/login.tpl');
     }
+    
     public function logoutClient()
     {
         if (isset($_SESSION['khachhang'])) {

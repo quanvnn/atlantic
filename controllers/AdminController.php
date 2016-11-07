@@ -1,4 +1,5 @@
 <?php
+
 include_once('controllers/SmartyController.php');
 include_once('controllers/HelperController.php');
 include_once('models/CategoryModel.php');
@@ -8,10 +9,8 @@ include_once('models/InvoiceModel.php');
 include_once('models/ContactModel.php');
 include_once('models/SubjectModel.php');
 include_once('models/AdminModel.php');
+include_once('library/Redirect.php');
 
-/**
- * Handle requests and respone Admin tool.
- */
 class AdminController
 {   
     private $adminModel;
@@ -28,170 +27,145 @@ class AdminController
      * 
      * @return class
      */
-    private function getAdminModel()
+    private function AdminModel()
     {
         return $this->adminModel = new AdminModel();
     }
 
-    private function getCategoryModel()
+    /**
+     * Get category model
+     * 
+     * @return class
+     */
+    private function CategoryModel()
     {
         return $this->categoryModel = new CategoryModel();
     }
 
-    private function getCommentModel()
+    /**
+     * Get comment model
+     * 
+     * @return class
+     */
+    private function CommentModel()
     {
         return $this->commentModel = new CommentModel();
     }
 
-    private function getProductModel()
+    /**
+     * Get product model
+     * 
+     * @return class
+     */
+    private function ProductModel()
     {
         return $this->productModel = new ProductModel();
     }
 
-    private function getInvoiceModel()
+    private function InvoiceModel()
     {
         return $this->invoiceModel = new InvoiceModel();
     }
 
-    private function getContactModel()
+    private function ContactModel()
     {
         return $this->contactModel = new ContactModel();
     }
     
-    private function getSubjectModel()
+    private function SubjectModel()
     {
         return $this->subjectModel = new SubjectModel();
     }
 
-    private function getHelperController()
+    private function HelperController()
     {
         return $this->helperController = new HelperController();
     }
 
-
-
     /**
-     * Function redirect user
+     * Function redirect to $url
      * 
      * @param  string $url, example $url = 'admin.html'
      * @return void
      */
     public function redirect($url)
     {
-        header('location:'.path.'/'.$url); exit();
+        header('location:'.path.'/'.$url); 
+        exit();
     }
 
+    /**
+     * Function redirect to manage comment page
+     * 
+     * @return response
+     */
     public function redirectToCommentPage()
     {
         return $this->redirect('quan-tri/binh-luan.html');
     }
 
+    /**
+     * Function redirect to manage invoice page
+     * 
+     * @return response
+     */
     public function redirectToInvoicePage()
     {
         return $this->redirect('quan-tri/don-hang.html');
     }
 
+    /**
+     * Function redirect to admin page
+     * 
+     * @return response
+     */
     public function redirectToManageSystemPage()
     {
         return $this->redirect('quan-tri.html');
     }
 
+    /**
+     * Function redirect to login page
+     * 
+     * @return response
+     */
     public function redirectToLoginAdminPage()
     {
         return $this->redirect('quan-tri/dang-nhap.html');
     }
 
+    /**
+     * Function redirect to manage products page
+     * 
+     * @return response
+     */
     public function redirectToProductPage()
     {
         return $this->redirect('quan-tri/san-pham.html');
     }
 
+    /**
+     * Function redirect to manage categories page
+     * 
+     * @return response
+     */
     public function redirectToCategoryPage()
     {
         return $this->redirect('quan-tri/loai-san-pham.html');
     }
 
+    /**
+     * Function redirect to manage subujects page
+     * 
+     * @return response
+     */
     public function redirectToSubjectPage()
     {
         return $this->redirect('quan-tri/chu-de.html');
-    }    
-
-
-    
-
-    /**
-     * Sign up admin account
-     *
-     * If have cookie, check info cookie with database then create session admin
-     * Else, admin must login, hadle form login
-     *
-     * @return void
-     */
-    public function loginAdmin()
-    {
-        $smarty = new SmartyController();
-
-        // Cookie name
-        $COOKIE_NAME = "admin";
-
-        // Cookie time
-        $COOKIE_TIME = (3600 * 24 * 7);
-
-        // Check cookie
-        if (isset($_COOKIE[$COOKIE_NAME])) {
-            parse_str($_COOKIE[$COOKIE_NAME]);
-
-            // Check user name and pass with database
-            $admin = $this->getAdminModel()->getInfoAdmin($username, $password);
-
-            if ($admin) {
-                //Create session admin
-                $infoAdmin = [
-                                'ten_nguoi_dung' => $admin['ho_ten'],
-                                'tendn'          => $admin['ten_dang_nhap']
-                            ];
-                $_SESSION['admin'] = $infoAdmin;
-
-                $this->redirectToManageSystemPage();
-            }
-        }
-
-        // Submit form login
-        if (isset($_POST['btnDangNhapAdmin'])) {
-            
-            // Validate user name
-            $username = addslashes($_POST['ten_dang_nhap']);
-
-            // Validate pass
-            $pass = addslashes($_POST['mat_khau']);
-
-            // Check user name and pass with database
-            //$adminModel = new AdminModel();
-            $admin = $this->getAdminModel()->getInfoAdmin($username, md5($pass));
-
-            if ($admin) {
-                // Create session admin
-                $infoAdmin = array(
-                    'ten_nguoi_dung' => $admin['ho_ten'],
-                    'tendn'          => $admin['ten_dang_nhap']
-                    );
-                $_SESSION['admin'] = $infoAdmin;
-
-                // Check box remember to set cookie
-                if (isset($_POST['remember'])) {
-                    $COOKIE_VALUE = "username=".$admin['ten_dang_nhap']."&password=".$admin['mat_khau'];
-                    setcookie($COOKIE_NAME, $COOKIE_VALUE, time() + $COOKIE_TIME);
-                }
-
-                $this->redirectToManageSystemPage();
-            }
-            else {
-                $smarty->assign('err','Vui lòng kiểm tra lại tên đăng nhập và mật khẩu.');
-            }
-        }
-
-        $smarty->display('admin/login.tpl');
     }
+
+
+
 
     /**
      * Home page in admin tool.
@@ -201,31 +175,17 @@ class AdminController
      */
     public function manageSystem()
     {
-        // Check session admin
+        
         if (! isset($_SESSION['admin'])) {
+
             $this->redirectToLoginAdminPage();
+
         } else {
+
             $smarty = new SmartyController();
+
             $smarty->display('admin/admin.tpl');
         }
-    }
-
-    /**
-     * Sign out admin account
-     *
-     * Destroy session and delete cookie admin
-     *
-     * @return void
-     */
-    public function logoutAdmin() {
-        session_destroy();
-        unset($_SESSION['admin']);
-
-        if (isset($_COOKIE['admin'])) {
-            setcookie("admin", "", time() - 3600);
-        }
-
-        $this->redirectToLoginAdminPage();
     }
 
     /**
@@ -238,7 +198,7 @@ class AdminController
     public function manageProducts()
     {
         // Get products
-        $products = $this->getAdminModel()->getProductAdmin();
+        $products = $this->AdminModel()->getProductAdmin();
 
         if ($products) {
             $smarty = new SmartyController();
@@ -272,14 +232,14 @@ class AdminController
             $idProduct = $this->validateId($_GET['key']);
 
             // Delete product by id
-            $product = $this->getProductModel()->getProductById($idProduct);
+            $product = $this->ProductModel()->getProductById($idProduct);
 
                 // Delete old image
                 if(file_exists('./public/hinh_san_pham/'.$product['hinh'])) {
                     unlink('./public/hinh_san_pham/'.$product['hinh']);
                     
                     // Delete product
-                    $this->getAdminModel()->deleteProduct($idProduct);
+                    $this->AdminModel()->deleteProduct($idProduct);
                 }
 
                 $this->redirectToProductPage();
@@ -334,7 +294,7 @@ class AdminController
                             ];
 
             // Check validation array product
-            if ($this->getHelperController()->checkData($data)) {
+            if ($this->HelperController()->checkData($data)) {
                 
                 // Check image product
                 if ($check->checkimage($data['hinh'])) {
@@ -345,7 +305,7 @@ class AdminController
                     if (move_uploaded_file($img['tmp_name'],'./public/hinh_san_pham/'.$data['hinh'])) {
                         
                         // Insert products into database
-                        $this->getAdminModel()->addProduct($data);
+                        $this->AdminModel()->addProduct($data);
 
                         // Confirm a message success to admin
                         $alert = 'Thêm sản phẩm thành công!';
@@ -356,7 +316,7 @@ class AdminController
                 }
             } else {
                 // Confirm a message fail to admin
-                $arrayErr = $this->getHelperController()->getDataErr();
+                $arrayErr = $this->HelperController()->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -370,11 +330,10 @@ class AdminController
         $smarty->assign('mangErr', $arrayErr);
         
         // Display categories to views
-        $smarty->assign('DSLoaiSanPham', $this->getCategoryModel()->getCat());
+        $smarty->assign('DSLoaiSanPham', $this->CategoryModel()->getCat());
 
         // Display subjects to views
-        $subjectModel = new SubjectModel();
-        $smarty->assign('DanhSachChuDe', $this->getSubjectModel()->getSubject());
+        $smarty->assign('DanhSachChuDe', $this->SubjectModel()->getSubject());
 
         // Confirm alert
         $smarty->assign('alert', $alert);
@@ -398,7 +357,7 @@ class AdminController
         }
 
         // Display products
-        $products = $this->getProductModel()->getProductById($idProduct); 
+        $products = $this->ProductModel()->getProductById($idProduct); 
 
         // use $oldImage to delete file image after upload new product
         $oldImgage = $products['hinh'];
@@ -438,7 +397,7 @@ class AdminController
                 ];
 
             // Check data products
-            if ($this->getHelperController()->checkData($products)) {
+            if ($this->HelperController()->checkData($products)) {
 
                 $newImage = $_FILES['hinh']; 
                 
@@ -459,14 +418,14 @@ class AdminController
                         $products['hinh'] = $imageName;
                         
                         // Update product
-                        $this->getAdminModel()->updateProduct($products);
+                        $this->AdminModel()->updateProduct($products);
                         
                         // Confirm a message seccess to admin
                         $alert = 'Cập nhật sản phẩm thành công!';
                     }
                 }
             } else {
-                $arrayErr = $this->getHelperController()->getDataErr();
+                $arrayErr = $this->HelperController()->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -480,10 +439,10 @@ class AdminController
         $smarty->assign('mangErr', $arrayErr);
 
         // Display categories to view
-        $smarty->assign('DSLoaiSanPham', $this->getCategoryModel()->getCat());
+        $smarty->assign('DSLoaiSanPham', $this->CategoryModel()->getCat());
 
         // Display subjects to view
-        $smarty->assign('DanhSachChuDe', $this->getSubjectModel()->getSubject());
+        $smarty->assign('DanhSachChuDe', $this->SubjectModel()->getSubject());
 
         // Display alert to view
         $smarty->assign('alert', $alert);
@@ -499,7 +458,7 @@ class AdminController
     public function manageCategories()
     {
         // Get data categories
-        $categories = $this->getCategoryModel()->getCat();
+        $categories = $this->CategoryModel()->getCat();
         
         if ($categories) {
             $smarty = new SmartyController();
@@ -523,7 +482,7 @@ class AdminController
             $idCategory = $this->validateId($_GET['key']);
 
             // Delete category
-            $this->getAdminModel()->deleteCat($idCategory);
+            $this->AdminModel()->deleteCat($idCategory);
 
             $this->redirectToCategoryPage();
         }
@@ -561,14 +520,14 @@ class AdminController
                             ];
 
             // Check data categories
-            if ($this->getHelperController()->checkDataCategory($data['loaicha'])) {
+            if ($this->HelperController()->checkDataCategory($data['loaicha'])) {
                 // Insert categories into database
-                $this->getAdminModel()->addCat($data['loaicha']);
+                $this->AdminModel()->addCat($data['loaicha']);
 
                 // Confirm a message seccess
                 $alert['loaicha'] = 'Thêm thành công!';
             } else {
-                $arrayErr = $this->getHelperController()->getDataErr();
+                $arrayErr = $this->HelperController()->getDataErr();
                 $alert['loaicha'] = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -582,14 +541,14 @@ class AdminController
                             ];
 
             // Check data categories
-            if ($this->getHelperController()->checkDataCategory($data['loaicon'])) {
+            if ($this->HelperController()->checkDataCategory($data['loaicon'])) {
                 // Insert sub categories into database
-                $this->getAdminModel()->addSubCat($data['loaicon']);
+                $this->AdminModel()->addSubCat($data['loaicon']);
 
                 // Confirm a message seccess
                 $alert['loaicon'] = 'Thêm thành công!';
             } else {
-                $arrayErr = $this->getHelperController()->getDataErr();
+                $arrayErr = $this->HelperController()->getDataErr();
                 $alert['loaicon'] = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -605,7 +564,7 @@ class AdminController
         $smarty->assign('alert', $alert);
 
         // Display categories to view
-        $smarty->assign('DSLoaiSanPham', $this->getCategoryModel()->getCat());
+        $smarty->assign('DSLoaiSanPham', $this->CategoryModel()->getCat());
 
         $smarty->display('admin/add_category.tpl');
     }
@@ -625,7 +584,7 @@ class AdminController
         }
 
         // Get Categories by id
-        $data = $this->getCategoryModel()->getCatByID($idProduct);
+        $data = $this->CategoryModel()->getCatByID($idProduct);
 
         // If fail
         if (! $data) {
@@ -650,15 +609,15 @@ class AdminController
                 );
 
             // Check data category
-            if ($this->getHelperController()->checkDataCategory($data)) {
+            if ($this->HelperController()->checkDataCategory($data)) {
 
                 // Insert data categories intio database
-                $this->getAdminModel()->updateCat($data);
+                $this->AdminModel()->updateCat($data);
                 
                 // Confirm a message success
                 $alert = 'Cập nhật thành công!';
             } else {
-                $arrayErr = $this->getHelperController()->getDataErr();
+                $arrayErr = $this->HelperController()->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -683,14 +642,13 @@ class AdminController
     {
         if (isset($_GET['key'])) {
 
-            // Product id
             $idProduct = $this->validateId($_GET['key']);
         } else {
             $this->redirectToCategoryPage();
         }
         
         // Get info category by id
-        $data = $this->getCategoryModel()->getCatByID($idProduct); 
+        $data = $this->CategoryModel()->getCatByID($idProduct); 
         
         if (! $data) {
             $this->redirectToCategoryPage();
@@ -713,16 +671,16 @@ class AdminController
                             ];
             
             // Check data category
-            if ($this->getHelperController()->checkDataCategory($data)) {
+            if ($this->HelperController()->checkDataCategory($data)) {
                 
                 // Insert categories into database
-                $this->getAdminModel()->updateSubCat($data);
+                $this->AdminModel()->updateSubCat($data);
                 
                 // Confirm to browser
                 $alert = 'Cập nhật thành công!';
             } else {
                 // Confirm error to browser
-                $arrayErr = $this->getHelperController()->getDataErr();
+                $arrayErr = $this->HelperController()->getDataErr();
                 $alert = 'Vui lòng điển đầy đủ thông tin.';
             }
         }
@@ -734,7 +692,7 @@ class AdminController
         $smarty->assign('mangErr', $arrayErr);
 
         // Get categories list to display out browser
-        $smarty->assign('DSLoaiSanPham', $this->getCategoryModel()->getCat());
+        $smarty->assign('DSLoaiSanPham', $this->CategoryModel()->getCat());
 
         $smarty->assign('alert', $alert);
 
@@ -749,7 +707,7 @@ class AdminController
     public function manageSubject()
     {
         // Get data subjects
-        $subjects = $this->getSubjectModel()->getSubject();
+        $subjects = $this->SubjectModel()->getSubject();
         
         if ($subjects) {
             $smarty = new SmartyController();
@@ -850,7 +808,7 @@ class AdminController
         }
 
         // Get subject by id
-        $data = $this->getSubjectModel()->getSubjectID($idSubject);
+        $data = $this->SubjectModel()->getSubjectID($idSubject);
 
         // Use old image name to delete old image when upload new image
         $oldImgage = $data['hinh'];
@@ -900,7 +858,7 @@ class AdminController
                         $data['hinh'] = $imageName;
 
                         // Insert data subject into database
-                        $this->getAdminModel()->updateSubject($data);
+                        $this->AdminModel()->updateSubject($data);
                         
                         // Confirm to browser
                         $alert = 'Cập nhật thành công!';
@@ -928,7 +886,7 @@ class AdminController
     public function manageInvoices()
     {
         // Get data invoices
-    	$invoices = $this->getInvoiceModel()->getInvoices();
+    	$invoices = $this->InvoiceModel()->getInvoices();
 
     	// Display invoices to views
     	$smarty = new SmartyController();
@@ -953,7 +911,7 @@ class AdminController
     		$idInvoice = $this->validateId($_GET['key']);
 
             // Get data invoices
-    		$invoices = $this->getInvoiceModel()->getInfoInvoice($idInvoice);
+    		$invoices = $this->InvoiceModel()->getInfoInvoice($idInvoice);
 
     		// Display invoices to views
     		if ($invoicesDetail) {
@@ -976,7 +934,7 @@ class AdminController
     public function manageRequireClient()
     {
         // Get request client
-        $requestClient = $this->getContactModel()->getRequireClient();
+        $requestClient = $this->ContactModel()->getRequireClient();
         
         // Display request client
         $smarty = new SmartyController();
@@ -994,7 +952,7 @@ class AdminController
      */
     public function manageComment()
     {
-        $comments = $this->getCommentModel()->getCommentAdmin();
+        $comments = $this->CommentModel()->getCommentAdmin();
         //var_dump($comments); exit();
         
         $smarty = new SmartyController();
@@ -1017,11 +975,12 @@ class AdminController
             // Comment id
             $idComment = $this->validateId($_GET['key']);
             
-            $this->getCommentModel()->deleteComment($idComment);
+            $this->CommentModel()->deleteComment($idComment);
 
             $this->redirectToCommentPage();
         } else {
             $this->redirectToCommentPage();
         }
     }
-}// ./ AdminController
+
+}
