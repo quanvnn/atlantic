@@ -33,6 +33,8 @@ if (isset($_GET['kihieu'])) {
             $FrontController->getProductInSubject(); break;
         case 'reset-password':
             $FrontController->resetPassWord(); break;
+        case 'search':
+            $FrontController->search(); break;
     }
 }
 else

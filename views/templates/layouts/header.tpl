@@ -70,10 +70,15 @@
 				</div>
 			<div class="search">
 			    <form>
-			    	<input type="text" id="s" placeholder="search...">
-					<input type="submit" value="" id="search">
+			    	<input type="text" id="text" placeholder="search...">
+					<input type="button" value="" id="search" onclick="load()">
 				</form>
 			</div>
+
+			<div id="result">
+				Content
+			</div>
+
 			<div class="clearfix"> </div>
 		</div>
 			<div class="clearfix"> </div>

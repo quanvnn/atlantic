@@ -3,6 +3,7 @@ RewriteEngine On
 RewriteRule ^(.*) - [E=BASE:%1]
 RewriteRule ^index.php ./front.php
 
+RewriteRule ^search ./front.php?kihieu=search
 RewriteRule ^ho-tro-khach-hang ./front.php?kihieu=ho-tro-khach-hang
 RewriteRule ^khach-hang/gui-yeu-cau ./front.php?kihieu=gui-yeu-cau
 RewriteRule ^khach-hang/dang-ky ./front.php?kihieu=dang-ky

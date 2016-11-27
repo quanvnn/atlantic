@@ -10,6 +10,13 @@ include_once('library/Pager.php');
 
 class FrontController
 {
+
+    public function search()
+    {
+        $text = $_POST['text'];
+        echo $text;
+    }
+
     /**
      * Home page
      * 

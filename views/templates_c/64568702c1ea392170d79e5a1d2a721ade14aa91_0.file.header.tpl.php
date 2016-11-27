@@ -1,16 +1,16 @@
 <?php
-/* Smarty version 3.1.29, created on 2016-11-08 20:13:40
-  from "/home/lequan/IMAD/atlantic/views/templates/layouts/header.tpl" */
+/* Smarty version 3.1.29, created on 2016-11-27 16:47:35
+  from "/home/lequan/dev/atlantic/views/templates/layouts/header.tpl" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.29',
-  'unifunc' => 'content_5821cf84537562_16451927',
+  'unifunc' => 'content_583aabb71ebf46_99960764',
   'file_dependency' => 
   array (
-    '859821a4bc3a884c5e16f965a03aebf4849dc4b2' => 
+    '64568702c1ea392170d79e5a1d2a721ade14aa91' => 
     array (
-      0 => '/home/lequan/IMAD/atlantic/views/templates/layouts/header.tpl',
+      0 => '/home/lequan/dev/atlantic/views/templates/layouts/header.tpl',
       1 => 1478610811,
       2 => 'file',
     ),
@@ -19,7 +19,7 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
   array (
   ),
 ),false)) {
-function content_5821cf84537562_16451927 ($_smarty_tpl) {
+function content_583aabb71ebf46_99960764 ($_smarty_tpl) {
 ?>
 <!-- header_top -->
 <div class="top_bg">

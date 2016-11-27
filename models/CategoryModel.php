@@ -1,5 +1,7 @@
 <?php
+
 include_once('models/Database.php');
+
 class CategoryModel extends Database
 {
     public function getCat()

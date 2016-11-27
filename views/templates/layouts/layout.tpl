@@ -53,6 +53,23 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		  });
 		});
 	</script>
+
+	<script type="text/javascript">
+		function load(){
+            $.ajax({
+                url : "/search",
+                type : "post",
+                dateType:"text",
+                data : {
+                     text : $('#text').val()
+                },
+                success : function (result){
+                    $('#result').html(result);
+                }
+            });
+        }
+	</script>
+
 	{block name='script'}{/block}
 
 </body>
